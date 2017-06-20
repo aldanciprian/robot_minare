@@ -4,6 +4,21 @@
 BASE=/media/sf_shared/temp/nicehash_mining/robot_minare/
 res=0
 startup=0
+
+ctrl_c()
+{
+	echo "Trapped CTRL-C"
+	if [ $res -ne 0 ]
+	then 
+		echo "Killing $res"
+		kill -9 $res
+		res=0
+	fi
+	exit 0
+}
+
+trap ctrl_c INT
+
 while [ 1 ]
 do
 	echo "========================"
