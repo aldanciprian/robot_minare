@@ -14,15 +14,27 @@ do
 	echo ${Startup}
 	if [  ${Startup} = "on" ]
 	then
-		res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep )
-		if [ $? -ne 0 ]
+		Startup=$(cat control.txt | grep location | awk -F"=" '{print $2}')
+		echo ${Startup}
+		if [  ${Startup} = "office" ]
 		then
-			echo "Starting simpleNiceHash.pl"
-			./simpleNiceHash.pl &
-			res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep | awk '{print $2}' )
+			res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep )
+			if [ $? -ne 0 ]
+			then
+				echo "Starting simpleNiceHash.pl"
+				./simpleNiceHash.pl &
+				res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep | awk '{print $2}' )
+			else
+				res=$(echo $res | awk '{print $2}')
+				echo "simpleNiceHash.pl allready started $res"
+			fi
 		else
-			res=$(echo $res | awk '{print $2}')
-			echo "simpleNiceHash.pl allready started $res"
+			if [ $res -ne 0 ]
+			then 
+				echo "Killing $res"
+				kill -9 $res
+				res=0
+			fi
 		fi
 	else
 		echo "Off"
