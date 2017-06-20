@@ -2,7 +2,7 @@
 #
 use strict;
 use warnings;
-
+my $interval = 60; #seconds
 while (1)
 {
 	my @etherscan_output = `lynx -dump https://etherscan.io/blocks`;
@@ -48,5 +48,5 @@ while (1)
 			$start_print = 0;
 		}
 	}
-	sleep 5;
+	sleep $interval;
 }
