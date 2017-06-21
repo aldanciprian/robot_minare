@@ -9,6 +9,17 @@ use Time::localtime;
 
 
 
+my $target_order;
+if (defined $ARGV[0])
+{
+	$target_order = $ARGV[0];
+}
+else
+{
+	$target_order = 0;
+}
+
+
 #nanopool
 my $eth_add = $ENV{'ETH_ADD'};
 
@@ -22,7 +33,6 @@ my $interval=10;  #seconds
 my $decline_price_int = 0; # we need 10 mins
 my $decline_price_int_limit = (600 / $interval) + 1; # we need 10 mins
 my $nr_bellow_limit = 3; # nr of orders bellow mine
-
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
 
 
@@ -101,12 +111,17 @@ while (1)
 	{
 		my $hashref_temp = \%$_;	
 		print "$date:\t$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";
-		if ($hashref_temp->{'id'} == 3083270)
+		if ($hashref_temp->{'id'} == $target_order)
 		{
 			foreach ( keys%{ $hashref_temp } ){
 				$specific_order->{ $_ } = $hashref_temp->{ $_ } ; 
 			}
 		}
+	}
+	print ref($specific_order)."\n";
+	if ( $target_order == 0 )
+	{
+		next;
 	}
 #	my @bellow_orders;
 	my $nr_bellow = 0;

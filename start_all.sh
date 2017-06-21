@@ -1,18 +1,21 @@
 #!/bin/sh
 
-. /home/ciprian/.bashrc
+#. /home/ciprian/.bashrc
 BASE=/media/sf_shared/temp/nicehash_mining/robot_minare/
-res=0
+pid=0
 startup=0
 
 ctrl_c()
 {
-	echo "Trapped CTRL-C"
-	if [ $res -ne 0 ]
+	echo "GENESIS Trapped CTRL-C"
+	if [ $pid -ne 0 ]
 	then 
-		echo "Killing $res"
-		kill -9 $res
-		res=0
+		#send a trap first
+		kill -2 $pid 2>/dev/null
+		sleep 1
+		echo "Killing $pid"
+		kill -9 $pid 2>/dev/null
+		pid=0
 	fi
 	exit 0
 }
@@ -21,7 +24,7 @@ trap ctrl_c INT
 
 while [ 1 ]
 do
-	echo "========================"
+	echo "============GENESIS $$============"
 	date
 	cd $BASE/
 	git pull
@@ -29,37 +32,25 @@ do
 	echo ${Startup}
 	if [  ${Startup} = "on" ]
 	then
-		Startup=$(cat control.txt | grep location | awk -F"=" '{print $2}')
-		echo ${Startup}
-		if [  ${Startup} = "office" ]
+		pid=$(ps -ef | grep master_process.sh | grep -v grep)
+		if [ $? -ne 0 ]
 		then
-			res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep )
-			if [ $? -ne 0 ]
-			then
-				echo "Starting simpleNiceHash.pl"
-				./simpleNiceHash.pl &
-				res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep | awk '{print $2}' )
-			else
-				res=$(echo $res | awk '{print $2}')
-				echo "simpleNiceHash.pl allready started $res"
-			fi
+			echo "master process is not started"
+			./master_process.sh &
+			pid=$(ps -ef | grep master_process.sh | grep -v grep | awk '{print $2}')
 		else
-			if [ $res -ne 0 ]
-			then 
-				echo "Killing $res"
-				kill -9 $res
-				res=0
-			fi
+			echo "master process is allready started"
+			pid=$(echo $pid | awk '{print $2}')
 		fi
 	else
 		echo "Off"
-		if [ $res -ne 0 ]
+		if [ $pid -ne 0 ]
 		then 
-			echo "Killing $res"
-			kill -9 $res
-			res=0
+			echo "Killing $pid"
+			kill -9 $pid
+			pid=0
 		fi
 	fi
 
-	sleep 2s
+	sleep 10s
 done
