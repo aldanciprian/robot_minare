@@ -8,6 +8,16 @@ use warnings;                   # Good practice
 use Time::localtime;
 
 
+my $target_order;
+if (defined $ARGV[0])
+{
+	$target_order = $ARGV[0];
+}
+else
+{
+	$target_order = 0;
+}
+
 
 #nanopool
 my $eth_add = $ENV{'ETH_ADD'};
@@ -25,6 +35,7 @@ my $interval=10;  #seconds
 my $decline_price_int = 0; # we need 10 mins
 my $decline_price_int_limit = (600 / $interval) + 1; # we need 10 mins
 my $nr_bellow_limit = 3; # nr of orders bellow mine
+my $target_price = 0; #current target price
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
 
@@ -75,24 +86,15 @@ sub keep_price_to_min {
 	#print ref($decoded_json->{'result'}->{'orders'});
 	my $min_price = 1000000;
 	my $min_fixed_price = 1000000; 
-	my $sum_limit_speed = 0;
-	my $sum_accepted_speed = 0;
-	my $sum_fixed_accepted_speed = 0;
-	my $sum_standard_accepted_speed = 0;
-	my $sum_fixed_limit_speed = 0;
-	my $sum_standard_limit_speed = 0;
 	my @active_orders;
+	my $specific_order;
 	foreach (@{$decoded_json->{'result'}->{'orders'}})
 	{
 
 		if ( $_->{'alive'} == 1 )
 		{	
-		$sum_accepted_speed = $sum_accepted_speed + $_->{'accepted_speed'};
-		$sum_limit_speed = $sum_limit_speed + $_->{'limit_speed'};
 			if ( $_->{'type'} == 1 )
 			{
-				$sum_fixed_accepted_speed += $_->{'accepted_speed'};		
-				$sum_fixed_limit_speed += $_->{'limit_speed'};	
 				if ( $min_fixed_price > $_->{'price'} )
 				{
 					$min_fixed_price = $_->{'price'};
@@ -109,8 +111,6 @@ sub keep_price_to_min {
 			if ( $_->{'type'} == 0 )
 			{
 				push (@active_orders,$_);			
-				$sum_standard_accepted_speed += $_->{'accepted_speed'};
-				$sum_standard_limit_speed += $_->{'limit_speed'};				
 				#if ( $_->{'accepted_speed'} > 0 )
 				if ( $_->{'workers'} > 0 )
 				{
@@ -120,6 +120,14 @@ sub keep_price_to_min {
 					}
 				}
 			}
+			if ( $_->{'id'} == $target_order )
+			{
+				my $hashref_temp = \%$_;	
+				foreach ( keys%{ $hashref_temp } ){
+					$specific_order->{ $_ } = $hashref_temp->{ $_ } ; 
+				}
+				print "$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";					
+			}
 		}
 	}
 	print "\nTIMESTAMP ".timestamp()." min price: $min_price\n";
@@ -127,53 +135,33 @@ sub keep_price_to_min {
 	my $date_unformated = $decoded_json->{'result'}->{'timestamp'};
 	$date= `date --date=\@$date_unformated`;
 	chomp($date);
-	#print Dumper $decoded_json;
-	my $specific_order;
+	##print Dumper $decoded_json;
 	print "my orders: \n";
 	foreach (@{$decoded_json->{'result'}->{'orders'}})
 	{
 		my $hashref_temp = \%$_;	
 		print "$date:\t$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";
-		if ($hashref_temp->{'id'} == 3083270)
+		if ($hashref_temp->{'id'} == $target_order)
 		{
 			foreach ( keys%{ $hashref_temp } ){
 				$specific_order->{ $_ } = $hashref_temp->{ $_ } ; 
 			}
 		}
 	}
-#	my @bellow_orders;
-	my $nr_bellow = 0;
-	my $sum_accepted_speed_bellow = 0;
-	my $sum_limit_speed_bellow = 0;	
-	print "Bellow orders that have activity: \n";
-	foreach (@active_orders)
+	if ( $target_order == 0 )
 	{
-		if ($_->{'workers'} > 0 )
-		{
-			if ($_->{'price'} < $specific_order->{'price'})
-			{
-				if ($_->{'id'} != $specific_order->{'id'} )
-				{
-					$nr_bellow++;
-					$sum_accepted_speed_bellow = $sum_accepted_speed_bellow + $_->{'accepted_speed'};
-					$sum_limit_speed_bellow = $sum_limit_speed_bellow + $_->{'limit_speed'};					
-					print "$date:\t$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";					
-#					push (@bellow_orders,$_);
-				}
-			}
-		}
+		next;
 	}
-	print "Total speed used bellow  $sum_accepted_speed_bellow ; Total speed limit bellow $sum_limit_speed_bellow ;  Nr orders bellow $nr_bellow \n";
-
-	return 0;
-	#set maximum price to 0.0760
-	if ( $min_price <= 0.0760 )
+	# don't go higher then 0.700
+	if ( $min_price <= 0.0700 )
 	{
-		if ( $nr_bellow > $nr_bellow_limit )
+		$target_price = $min_price + 0.0001;
+		if ( $specific_order->{'price'} > $target_price )
 		{
-			print "to decrease \n";
-			if ($specific_order->{'limit_speed'} < $sum_limit_speed_bellow )
+			#decrease
+			if ( ($specific_order->{'price'} - $target_price ) > 0.0005 )
 			{
+				print timestamp()." DOWN  ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
 				#decrese speed
 				if ( $decline_price_int == 0 )
 				{
@@ -192,29 +180,33 @@ sub keep_price_to_min {
 			}
 			else
 			{
-				print "We still have to wait $decline_price_int for success decrease \n";
+				print timestamp()." Could go DOWN ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
+
 			}
 		}
 		else
 		{
-			#increase speed
-			print "to increase \n";
-			my $increase_price = $specific_order->{'price'} +  0.0001;
-			print "increase price with $increase_price \n";
-			$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price&id=$apiid&key=$apikey&location=0&algo=$algo&order=$specific_order->{'id'}&price=$increase_price");
-			print Dumper $decoded_json;		
+			#increase
+			if ($specific_order->{'price'} < $target_price )
+			{
+				print timestamp()." UP  ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
+				#print "to increase \n";
+				my $increase_price = $specific_order->{'price'} +  0.0001;
+				print "increase price with $increase_price \n";
+				$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price&id=$apiid&key=$apikey&location=0&algo=$algo&order=$specific_order->{'id'}&price=$increase_price");
+				#print Dumper $decoded_json;		
+				
+			}
+			else
+			{
+				#constant
+				print timestamp()." CONST  ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
+			}
 		}
 	}
-	else
-	{
-		print "To much to oay $min_price \n";
-	}
 	
-	
-	#
 	if ($decline_price_int > 0 )
 	{
 		$decline_price_int--;
 	}
-
 }
