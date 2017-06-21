@@ -48,6 +48,7 @@ sub keep_price_to_min;
 
 while (1) 
 {
+	print "============================= FOLLOW NANOPOOL ".timestamp()."  $$ ======================\n";
 	keep_price_to_min();
 	sleep  $interval;
 }
@@ -159,7 +160,7 @@ sub keep_price_to_min {
 		if ( $specific_order->{'price'} > $target_price )
 		{
 			#decrease
-			if ( ($specific_order->{'price'} - $target_price ) > 0.0005 )
+			if ( ($specific_order->{'price'} - $target_price ) > 0.0002 )
 			{
 				print timestamp()." DOWN  ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
 				#decrese speed
