@@ -1,6 +1,6 @@
 #!/bin/sh
 
-
+. /home/ciprian/.bashrc
 BASE=/media/sf_shared/temp/nicehash_mining/robot_minare/
 res=0
 startup=0
