@@ -11,8 +11,8 @@ ctrl_c()
 	if [ $pid -ne 0 ]
 	then 
 		#send a trap first
-		kill -2 $pid 2>/dev/null
-		sleep 1
+		kill -10 $pid 2>/dev/null
+		sleep 10
 		echo "Killing $pid"
 		kill -9 $pid 2>/dev/null
 		pid=0
@@ -46,6 +46,8 @@ do
 		echo "Off"
 		if [ $pid -ne 0 ]
 		then 
+			kill -10 $pid 2>/dev/null
+			sleep 10
 			echo "Killing $pid"
 			kill -9 $pid
 			pid=0
