@@ -137,13 +137,13 @@ while (1)
 		if ( $nr_bellow > $nr_bellow_limit )
 		{
 			print "to decrease \n";
-			if ($specific_order->{'limit_speed'} < $sum_limit_speed_bellow )
-			{
+#			if ($specific_order->{'limit_speed'} < $sum_limit_speed_bellow )
+#			{
 				#decrese speed
 				if ( $decline_price_int == 0 )
 				{
 					$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$specific_order->{'id'}");
-					#print Dumper $decoded_json;
+					print Dumper $decoded_json;
 					if ( exists $decoded_json->{'result'}->{'success'} )
 					{
 						print "decrease success \n";
@@ -154,7 +154,7 @@ while (1)
 						print  "decrease error \n";
 					}
 				}
-			}
+#			}
 		}
 		else
 		{
