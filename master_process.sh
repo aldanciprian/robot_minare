@@ -27,16 +27,21 @@ do
 	echo ${Startup}
 	if [  ${Startup} = "office" ]
 	then
-		ps -ef | grep simpleNiceHash.pl | grep -v grep
-		res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep | grep -v "vi ")
-		if [ $? -ne 0 ]
+		if false 
 		then
-			./simpleNiceHash.pl &
-			res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep | grep -v "vi " |  awk '{print $2}' )
-			echo "Starting simpleNiceHash.pl $res"
+			ps -ef | grep simpleNiceHash.pl | grep -v grep
+			res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep | grep -v "vi ")
+			if [ $? -ne 0 ]
+			then
+				./simpleNiceHash.pl &
+				res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep | grep -v "vi " |  awk '{print $2}' )
+				echo "Starting simpleNiceHash.pl $res"
+			else
+				res=$(echo $res | awk '{print $2}')
+				echo "simpleNiceHash.pl allready started $res"
+			fi
 		else
-			res=$(echo $res | awk '{print $2}')
-			echo "simpleNiceHash.pl allready started $res"
+			echo "Disabled"
 		fi
 	else
 		if [ $res -ne 0 ]

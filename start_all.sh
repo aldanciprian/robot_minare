@@ -27,7 +27,7 @@ do
 	echo "============GENESIS $$============"
 	date
 	cd $BASE/
-	git pull
+	git pull -f
 	Startup=$(cat control.txt | grep startup | awk -F"=" '{print $2}')
 	echo ${Startup}
 	if [  ${Startup} = "on" ]
