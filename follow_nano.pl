@@ -155,7 +155,7 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		$target_price = $min_price + 0.0001;
+		$target_price = $min_price + 0.0002;
 		if ( $specific_order->{'price'} > $target_price )
 		{
 			#decrease
@@ -201,6 +201,14 @@ sub keep_price_to_min {
 			{
 				#constant
 				print timestamp()." CONST  ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
+				if ($specific_order->{'workers'} == 0 )
+				{
+					my $increase_price = $specific_order->{'price'} +  0.0001;
+					print "special condition increase price with $increase_price \n";
+					$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price&id=$apiid&key=$apikey&location=0&algo=$algo&order=$specific_order->{'id'}&price=$increase_price");
+					#print Dumper $decoded_json;		
+					
+				}
 			}
 		}
 	}
