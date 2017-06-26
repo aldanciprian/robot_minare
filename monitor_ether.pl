@@ -2,8 +2,8 @@
 #
 use strict;
 use warnings;
-my $interval = 60; #seconds
-while (1)
+my $interval = 0; #seconds
+#while (1)
 {
 	my @etherscan_output = `lynx -dump https://etherscan.io/blocks`;
 	my $start_print = 0;
@@ -24,9 +24,12 @@ while (1)
 				{
 					if ( $line =~ m/.*TimeStamp.*\((.*?)\)/  )
 					{
-						#print $line;
+						my $date;
+						#print "[$line]";
 						chomp $line;
-						print $1."\t#\t";
+						$date = `date --date="$1" +"%F_%T"`;
+						chomp $date;
+						print $date."\t#\t";
 					}
 					if ( $line =~ m/.*Uncles Reward.*/  )
 					{
