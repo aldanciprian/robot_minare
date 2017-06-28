@@ -105,7 +105,8 @@ sub initExcelParamsStartup{
     		my $orderID = $cell->value;
 
     		##here I am getting a problem##
-			$Index_Of{$orderID} = $col;
+		$Index_Of{$orderID} = $col;
+		$newIDSet{$ID} = $col;
     		#printf( "IndexOf %s = > %d  \n",$orderID,$Index_Of{$orderID});
 	   }
        }
