@@ -363,12 +363,14 @@ sub processLogEntry
 sub getPrevious{
   my ($noOfTF) = @_;
   my $crtTime = localtime;
+  $crtTime = Time::Piece->strptime($crtTime,'%a %b %d %H:%M:%S %Y');
+  my $frmtCrtTime = $crtTime->strftime("%Y-%m-%d_%H-%M-%S");
   my $HI = 0;
   my $AI = 0;  
   my $pHI = 0;
   my $pAI = 0;
   
-  getTimeIndexes($crtTime,\$AI,\$HI);
+  getTimeIndexes($frmtCrtTime,\$AI,\$HI);
   getPreviousIndex($AI,$HI,\$pAI,\$pHI);
   
   print " ===> we start with AI $pAI and HI $pHI\n";
@@ -427,7 +429,10 @@ sub getCrt{
   my $noOfUncles = 0;
       
   my $crtTime = localtime;
-  getTimeIndexes($crtTime,\$AI,\$HI);
+  $crtTime = Time::Piece->strptime($crtTime,'%a %b %d %H:%M:%S %Y');
+  my $frmtCrtTime = $crtTime->strftime("%Y-%m-%d_%H-%M-%S");
+   
+  getTimeIndexes($frmtCrtTime,\$AI,\$HI);
   
   my $low = $HI*10;
   my $high = ($HI+1)*10 -1;
