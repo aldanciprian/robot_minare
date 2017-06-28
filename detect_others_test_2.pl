@@ -22,17 +22,17 @@ use warnings;                   # Good practice
 use Time::localtime;
 
 
-`rm -rf ./perl.xls`;
+
 ### alina
 my $filename='perl.xls';
 my $excelFile;
 my $excelParser;
 my $crtWrksheet;
 my $lastTimeStamp='';
-my $minOrderId = 0;
 #column index for ID
 my %Index_Of = ();
-my @TagSet = qw(MinPrice Speed Miners);
+$Index_Of{'MinPrice'} = 1;
+my @SheetSet = qw(Price Speed Miners);
 ### alina
 
 
@@ -65,7 +65,6 @@ my $decline_price_int = 0; # we need 10 mins
 my $decline_price_int_limit = (600 / $interval) + 1; # we need 10 mins
 my $nr_bellow_limit = 3; # nr of orders bellow mine
 my $target_price = 0; #current target price
-my $min_price = 1000000;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
 
@@ -78,7 +77,6 @@ sub follow_others;
 #citire la startup
 #@param file name
 sub initExcelParamsStartup{
-
   $excelFile   = Spreadsheet::ParseExcel::SaveParser->new();
   $excelParser = $excelFile->Parse($filename);
 
@@ -92,9 +90,9 @@ sub initExcelParamsStartup{
        my $cell = $crtWrksheet->get_cell($row,0);
        if (defined $cell)
        {	
-		  my $TS = $cell->value;
-		  #printf( "timeStamp is %s \n",$TS);
-		  $lastTimeStamp = $TS;
+   	  my $TS = $cell->value;
+   	  #printf( "timeStamp is %s \n",$TS);
+   	  $lastTimeStamp = $TS;
 
     	  for my $col(0..$crtWrksheet->col_range)
     	  {
@@ -102,120 +100,81 @@ sub initExcelParamsStartup{
     		next unless $cell;
     		my $orderID = $cell->value;
 
-    	      	#$cell = $crtWrksheet->get_cell($row,$col);
-        	#next unless $cell;
-      		#my $value=$cell->value;
-    
     		##here I am getting a problem##
-			my $TagExists = any { $_ eq $orderID } @TagSet;
-        	if (!$TagExists)
-			{
-    			$Index_Of{$orderID} = $col;
-    			#printf( "TS %s = > For oderID %s  \n",$TS,$orderID);
-			}
-    	  }
-      }
+  		$Index_Of{$orderID} = $col;
+    		printf( "IndexOf %s = > %d  \n",$orderID,$Index_Of{$orderID});
+	   }
+       }
     }
   }
   else
   {
 	my $workbook  = Spreadsheet::WriteExcel->new($filename);
-	foreach my $tag (@TagSet)
+	foreach my $sheet (@SheetSet)
 	{	
-		$crtWrksheet = $workbook->add_worksheet($tag);
-		$crtWrksheet->write(0,1,$tag);
+		$crtWrksheet = $workbook->add_worksheet($sheet);
+		$crtWrksheet->write(0,1,'MinPrice');
+
 	}
 	$workbook->close;
 	$excelParser = $excelFile->Parse($filename);
   }
 }
 
-#rowIncrement => 1 for newTag. means newTS #add to reference minPrice Sheet
-
-sub processTag{
-   my ($timeStamp, $ID, $value, $rowIncrement) = (@_);
-   $crtWrksheet =  $excelParser->worksheet($ID);
-   
-   if ($rowIncrement)
-   {
-      $crtWrksheet->AddCell($crtWrksheet->row_range+1, 0, $timeStamp);
-      $crtWrksheet->AddCell($crtWrksheet->row_range+0, 1, $value);
-   }
-   else
-   {
-      my $minPriceSheet = $excelParser->worksheet(0);
-      my $cell =  $crtWrksheet->get_cell($minPriceSheet->row_range+0,0);
-      if (!defined $cell)
-      {
-      	#add timeStamp
-	$crtWrksheet->AddCell($minPriceSheet->row_range+0,0,$timeStamp);
-      }
-      else
-      {
-        $crtWrksheet->AddCell($minPriceSheet->row_range+0,1,$value);
-	$excelParser->SaveAs($filename);
-      }
-   }
-}
-
-sub removeIDs{
-	my ($minID) = @_;
-	foreach my $key (keys %Index_Of) {
-		if ($key < $minID) {
-		    delete($Index_Of{$key});
-		}
-	}
-	
-}
-
 sub processMessage{
   my ($message) = @_;
   my (@words) = split /#/, $message;
   my $timeStamp = $words[0];
-  my $ID = $words[1];
-  my $value = $words[2];
+  my $sheetID = $words[1];
+  my $ID = $words[2];
+  my $value = $words[3];
   
-  #printf("ID %s\n",$ID);
+  $crtWrksheet = $excelParser->worksheet($sheetID);
+  
+  if (!defined $crtWrksheet)
+  {
+    #create worksheet
+    $crtWrksheet = $excelParser->AddWorksheet($sheetID);
+  }
+  
   if ($lastTimeStamp eq $timeStamp)
   {
-    #simpleOrderID we have index for
-    if (defined $Index_Of{$ID})
+    #exiting oderID
+    if (!defined $Index_Of{$ID})
     {
-      #printf("we have the realOrderIdINDEX %s we will add the value %d\n",$ID,$value);
-      #if we don't have the ID yet in this worksheet add it	
-      my $orderIDCell = $crtWrksheet->get_cell(0,$Index_Of{$ID});
-      if (!defined $orderIDCell)
-		{
-			$crtWrksheet -> AddCell(0, $Index_Of{$ID}, $ID);
-		}	
-      $crtWrksheet -> AddCell($crtWrksheet->row_range+0, $Index_Of{$ID}, $value);
+      $Index_Of{$ID} = $crtWrksheet->col_range+1;
     }
-    else
+    #printf("we have the realOrderIdINDEX %s we will add the value %d\n",$ID,$value);
+    #if we don't have the ID yet in this worksheet add it	
+    my $orderIDCell = $crtWrksheet->get_cell(0,$Index_Of{$ID});
+    if (!defined $orderIDCell)
+    {	
+	$crtWrksheet -> AddCell(0, $Index_Of{$ID}, $ID);
+    }	
+    $crtWrksheet -> AddCell($crtWrksheet->row_range+0, $Index_Of{$ID}, $value);
+    if ($ID eq 'MinPrice')
     {
-      #newOrderID #except TAGS
-      my $TagExists = any { $_ eq $ID } @TagSet;
-      if (!$TagExists)
-      {
- 
-	#newOrderID
-      	$Index_Of{$ID} = $crtWrksheet->col_range+1;
-      	#printf("create rowNo 0 colNo %d with newID %s\n",$crtWrksheet->col_range+1,$ID);
-	    $crtWrksheet->AddCell(0,$crtWrksheet->col_range+1, $ID);
-      	#printf("create rowNo %d colNo %d with newID %s\n",$crtWrksheet->row_range+0,$crtWrksheet->col_range+0,$value);
-      	$crtWrksheet->AddCell($crtWrksheet->row_range+0,$crtWrksheet->col_range+0, $value);
-      }
-	  else
-	  {
-		processTag($timeStamp,$ID,$value,0);
-	  }
+       $excelParser->SaveAs($filename);
     }
   }
   else
   {
 	$lastTimeStamp = $timeStamp;
-	processTag($timeStamp,$ID,$value,1);
+	#newTS #add one new line to each sheet
+	foreach my $sheet (@SheetSet)
+	{
+	  $crtWrksheet = $excelParser->worksheet($sheet);
+	  if (!defined $crtWrksheet)
+	  {
+	    $crtWrksheet = $excelParser->AddWorksheet($sheet);
+	    $crtWrksheet->AddCell(0,1,'MinPrice');
+	  }
+	  $crtWrksheet->AddCell($crtWrksheet->row_range+1, 0, $timeStamp);
+	  #printf("add TS value %d,%d,sheet %s\n",$crtWrksheet->row_range+1,0,$sheet);
+	}
+	#add value and ID if new
+	processMessage($message);
   }
-
 }
 ### alina
 
@@ -262,6 +221,7 @@ sub follow_others {
 	$decoded_json = get_json( "https://api.nicehash.com/api?method=orders.get&location=0&algo=$algo" );
 	#print Dumper $decoded_json;
 	#print ref($decoded_json->{'result'}->{'orders'});
+	my $min_price = 1000000;
 	my $min_fixed_price = 1000000; 
 	my $specific_order;
 	my $tstmp = timestamp();
@@ -297,29 +257,19 @@ sub follow_others {
 					{
 						$min_price = $_->{'price'};
 					}
-					my $delta = 0.0010;
-					my $high_price = $min_price + $delta;
-					my $low_price = $min_price - $delta;
-					#print "[$high_price]  [$low_price] \n";
-					if ( ($_->{'price'} < $high_price) )
-					{
-						if  ($_->{'price'} > $low_price)
-						{
-						#print "$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";					
-						# send to excel this order 
-						#print "$tstmp#$_->{'id'}#$_->{'price'}\n";					
-						processMessage("$tstmp#$_->{'id'}#$_->{'price'}");
-						#processMessage("Thu Jun 22 14:06:39 2017#MinPrice#0.01");
-						#processMessage("Thu Jun 22 14:06:39 2017#1234567#0.01");
-						#processMessage("Thu Jun 22 14:06:39 2017#11102#7");
-						}
-					}
 				}
+				#print "$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";					
+				print "$tstmp#$_->{'id'}#$_->{'price'}\n";					
+				# send to excel this order 
+				processMessage("$tstmp#$_->{'id'}#$_->{'price'}");
+				#processMessage("Thu Jun 22 14:06:39 2017#MinPrice#0.01");
+				#processMessage("Thu Jun 22 14:06:39 2017#1234567#0.01");
+				#processMessage("Thu Jun 22 14:06:39 2017#11102#7");
 			}
 		}
 	}
 	print "\nTIMESTAMP STOP".timestamp()."\n";
-	print "\nTIMESTAMP $tstmp min price: $min_price\n";
+	#print "\nTIMESTAMP $tstmp min price: $min_price\n";
 	#real mesaj
 	processMessage("$tstmp#MinPrice#$min_price");
 }

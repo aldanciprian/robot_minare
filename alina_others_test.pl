@@ -22,7 +22,7 @@ use warnings;                   # Good practice
 use Time::localtime;
 
 
-
+`rm -rf ./perl.xls`;
 ### alina
 my $filename='perl.xls';
 my $excelFile;
@@ -63,11 +63,12 @@ my $apiid = $ENV{'NICEHASH_APIID'};
 my $apikey = $ENV{'NICEHASH_APIKEY'};
 #daggerhassimoto is 20 at nicehash
 my $algo=20;
-my $interval=10;  #seconds
+my $interval=20;  #seconds
 my $decline_price_int = 0; # we need 10 mins
 my $decline_price_int_limit = (600 / $interval) + 1; # we need 10 mins
 my $nr_bellow_limit = 3; # nr of orders bellow mine
 my $target_price = 0; #current target price
+my $inital_start = 0;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
 
@@ -173,7 +174,7 @@ sub processMessage{
 	foreach my $nonId (@nonExistingIDs)
 	{
 		printf("-----------> remove %s \n",$nonId);
-		delete $Index_Of{$nonId};
+		#delete $Index_Of{$nonId};
 	}
 	$lastTimeStamp = $timeStamp;
 	%newIDSet =();
@@ -218,7 +219,7 @@ sub get_json
 	$json = get( $url );
 	#print "curl --silent $url \n" ;
 	#$json = `curl --silent $url`;
-	warn "Could not get $url  !" unless defined $json;
+	print "Could not get $url  !" unless defined $json;
 
 
 	# Decode the entire JSON
@@ -238,9 +239,9 @@ sub follow_others {
 	$decoded_json = get_json( "https://api.nicehash.com/api?method=orders.get&location=0&algo=$algo" );
 	#print Dumper $decoded_json;
 	#print ref($decoded_json->{'result'}->{'orders'});
-	my $min_price = 1000000;
 	my $min_fixed_price = 1000000; 
 	my $specific_order;
+	my $min_price = 1000000;
 	my $tstmp = timestamp();
 	# fake minprice messaj
 	print "\nTIMESTAMP START".timestamp()."\n";
@@ -274,24 +275,38 @@ sub follow_others {
 						$min_price = $_->{'price'};
 					}
 				}
-				#print "$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";					
-				print "$tstmp#$_->{'id'}#$_->{'price'}\n";					
-				# send to excel this order 
-				processMessage("$tstmp#Price#$_->{'id'}#$_->{'price'}");
-				processMessage("$tstmp#Speed#$_->{'id'}#$_->{'limit_speed'}");
-				processMessage("$tstmp#Miners#$_->{'id'}#$_->{'workers'}");
-				#processMessage("Thu Jun 22 14:06:39 2017#MinPrice#0.01");
-				#processMessage("Thu Jun 22 14:06:39 2017#1234567#0.01");
-				#processMessage("Thu Jun 22 14:06:39 2017#11102#7");
 			}
 			else
 			{
-				print "$tstmp#TYPE $_->{'type'}#$_->{'id'}#$_->{'price'}\n";	
+				#print "$tstmp#TYPE $_->{'type'}#$_->{'id'}#$_->{'price'}\n";	
+			}
+		}
+	}
+	foreach (@{$decoded_json->{'result'}->{'orders'}})
+	{
+
+		if ( $_->{'type'} == 0 )
+		{
+			#if ( $_->{'accepted_speed'} > 0 )
+			if ( $_->{'workers'} > 0 )
+			{
+				if  ( ($_->{'price'} > ($min_price - 0.0010) )  &&  ( $_->{'price'} < ( $min_price + 0.0010 )   )  )
+				{
+					#print "$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";					
+					print "$tstmp#$_->{'id'}#$_->{'price'}\n";					
+					# send to excel this order 
+					processMessage("$tstmp#Price#$_->{'id'}#$_->{'price'}");
+					processMessage("$tstmp#Speed#$_->{'id'}#$_->{'limit_speed'}");
+					processMessage("$tstmp#Miners#$_->{'id'}#$_->{'workers'}");
+					#processMessage("Thu Jun 22 14:06:39 2017#MinPrice#0.01");
+					#processMessage("Thu Jun 22 14:06:39 2017#1234567#0.01");
+					#processMessage("Thu Jun 22 14:06:39 2017#11102#7");
+				}
 			}
 		}
 	}
 
-	#print "\nTIMESTAMP $tstmp min price: $min_price\n";
+	print "\nTIMESTAMP $tstmp min price: $min_price\n";
 	#real mesaj
 	processMessage("$tstmp#Price#MinPrice#$min_price");
 	print "\nTIMESTAMP STOP".timestamp()."\n";
