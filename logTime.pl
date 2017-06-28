@@ -97,6 +97,8 @@ sub getPrevious{
   
   @lastXBlocks = ();
   my $noOfChunks = 0;
+  my $noOfBlocks = 0;
+  my $noOfUncles = 0;
   my $niceKey = '';
 
   while (  $noOfChunks < $noOfTF )
@@ -107,19 +109,30 @@ sub getPrevious{
       my $low = $pHI*10;
       my $high = ($pHI+1)*10 -1;
       $niceKey = sprintf("%02s:%02s:00-%02s:%02s:59",$pAI,$low,$pAI,$high);
-      
+    
+      my $noOfBlocks = 0;
+      my $noOfUncles = 0;
+    
       #print "niceKey is $niceKey chunkNo is $noOfChunks \n";
-      $lastXBlocks[$noOfChunks]{$niceKey} = {};
+      #$lastXBlocks[$noOfChunks]{$niceKey} = {};
       
+      $lastXBlocks[$noOfChunks]{'timeFrame'} = $niceKey;
+      $lastXBlocks[$noOfChunks]{'blocks'} =();
       foreach my $id (keys %{$_24HrsBlocks[$pAI]{$pHI}})
       {
-        $lastXBlocks[$noOfChunks]{$niceKey}{$id} = $_24HrsBlocks[$pAI]{$pHI}{$id};
+	$lastXBlocks[$noOfChunks]{'blocks'}{$id} = $_24HrsBlocks[$pAI]{$pHI}{$id};
+	$noOfBlocks = $noOfBlocks + 1;
+	$noOfUncles = $noOfUncles + $_24HrsBlocks[$pAI]{$pHI}{$id};
       }
+      
+      $lastXBlocks[$noOfChunks]{'noOfBlocks'} = $noOfBlocks;
+      $lastXBlocks[$noOfChunks]{'uncles'} = $noOfUncles;
       $noOfChunks = $noOfChunks + 1;
       $AI = $pAI;
       $HI = $pHI;
       getPreviousIndex($AI,$HI,\$pAI,\$pHI);
   }
+  
     
 }
 
@@ -131,19 +144,31 @@ sub getCrt{
   my $AI = 0; 
   
   %crtBlocks = ();
-
+  
+  my $noOfBlocks = 0;
+  my $noOfUncles = 0;
+      
   my $crtTime = localtime;
   getTimeIndexes($crtTime,\$AI,\$HI);
   
+  my $low = $HI*10;
+  my $high = ($HI+1)*10 -1;
+  my $niceKey = sprintf("%02s:%02s:00-%02s:%02s:59",$AI,$low,$AI,$high);
+  $crtBlocks{'timeFrame'} = $niceKey;
+  $crtBlocks{'blocks'} = ();
   if (defined $_24HrsBlocks[$AI])
   {
     #print Dumper $_24HrsBlocks[$AI]{$HI};
     
     foreach my $id (keys %{$_24HrsBlocks[$AI]{$HI}})
     {
-      $crtBlocks{$id}=$_24HrsBlocks[$AI]{$HI}{$id};
+      $crtBlocks{'blocks'}{$id}=$_24HrsBlocks[$AI]{$HI}{$id};
+      $noOfBlocks = $noOfBlocks + 1;
+      $noOfUncles = $noOfUncles + $_24HrsBlocks[$AI]{$HI}{$id};      
     }
   }
+  $crtBlocks{'noOfBlocks'} = $noOfBlocks;
+  $crtBlocks{'uncles'} = $noOfUncles;
   #return \%crtBlocks;
   #return %crtBlocks;
 }
@@ -154,7 +179,9 @@ my @Messages = ('Thu Jun 22 11:06:39 2017#1#3', 'Thu Jun 22 14:08:30 2017#2#7','
 'Thu Jun 22 13:36:39 2017#bl01#5', 'Thu Jun 22 13:35:30 2017#bl103#77',
 'Thu Jun 22 14:12:39 2017#bl01343#5','Thu Jun 22 14:32:39 2017#bl0qw2#6','Thu Jun 22 14:32:39 2017#bl0qw2#10',
 'Thu Jun 22 14:32:39 2017#bl01#5','Thu Jun 22 14:32:39 2017#bl02#6',
-
+'Thu Jun 22 10:06:39 2017#1#3', 'Thu Jun 22 14:08:30 2017#2#7','Thu Jun 22 10:09:41 2017#2#5',
+'Thu Jun 22 08:56:39 2017#bl1#3', 'Thu Jun 22 08:51:30 2017#bl3#7','Thu Jun 22 14:09:41 2017#bl4#5',
+'Thu Jun 22 07:36:39 2017#bl01#5', 'Thu Jun 22 07:35:30 2017#bl103#77'
 );
 
 foreach my $message (@Messages)
