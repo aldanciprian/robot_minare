@@ -191,8 +191,8 @@ foreach my $message (@Messages)
 
 #print Dumper @_24HrsBlocks;
 
-getCrt();
-print Dumper %crtBlocks;
+#getCrt();
+#print Dumper %crtBlocks;
 
-#getPrevious(6);
-#print Dumper @lastXBlocks;
+getPrevious(6);
+print Dumper @lastXBlocks;
