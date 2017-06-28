@@ -8,36 +8,13 @@ use warnings;                   # Good practice
 use Time::localtime;
 use Time::Piece;
 
-#my $t = localtime;
-my $t = "23-06-2017, 21:20:59";
-print "Time is $t\n";
-sleep 1;
 
-#my $t2 = localtime;
-my $t2 = "29-06-2017, 21:28:59";
-print "Time is $t2\n";
-#print "Year is ", $t->year, "\n";
-#my $format = '%F_%T';
-#my $dateformat = "%H:%M:%S, %m/%d/%Y";
-my $dateformat = "%d-%m-%Y, %H:%M:%S";
-#my $dateformat = "%F, %T";
 
-#my $date1 = "11:56:41, 11/22/2011";
-#my $date2 = "11:20:41, 11/20/2011";
+#alina GLOBALE#
+my @_24HrsBlocks = ();
+my %crtBlocks =();
+my @lastXBlocks =();
 
-$t = Time::Piece->strptime($t, $dateformat);
-$t2 = Time::Piece->strptime($t2, $dateformat);
-
-if ($t2 < $t) 
-{
-	print "$t2 is  earlier then $t \n";
-} 
-else 
-{
-	print "$t is earlier then $t2 \n";
-}
-
-exit 0;
 
 my $target_order;
 if (defined $ARGV[0])
@@ -78,6 +55,23 @@ sub get_json;
 sub timestamp;
 sub keep_price_to_min;
 sub count_blocks_tick;
+sub getTimeIndexes;
+sub getPreviousIndex;
+sub processLogEntry;
+sub getPrevious;
+sub getCrt;
+
+#init
+#init 24HRS array
+for my $j (0..23)
+{
+for my $k (0..5)
+{
+  $_24HrsBlocks[$j]{$k}= {};
+}
+}
+
+
 
 
 
@@ -85,6 +79,7 @@ while (1)
 {
 	print "============================= FOLLOW NANOPOOL ".timestamp()."  $$ ======================\n";
 	count_blocks_tick();
+	getCrt();	
 	#keep_price_to_min();
 	sleep  $interval;
 }
@@ -269,18 +264,27 @@ sub count_blocks_tick {
 			my $tstmp = trim($1);
 			my $uncles = trim($2);
 			my $block_id = trim($3);
-			my @block_uncle = ( $block_id , $uncles );
-			if (exists $total_blocks{$tstmp})
+			print "[$tstmp] [$uncles]  [$block_id] \n";			
+			# my @block_uncle = ( $block_id , $uncles );
+			# if (exists $total_blocks{$tstmp})
+			# {
+				# print "Multiple $tstmp \n";
+			# }
+			# else
+			# {
+				# print "Once $tstmp \n";
+				# $total_blocks{$tstmp} = [ @block_uncle ]; 
+			# }
+			my $nb_uncles = 0;			
+			if ( $uncles =~ /.*(\d*) Uncle.*?at.*/ )
 			{
-				print "Multiple $tstmp \n";
+				$nb_uncles = $1;
 			}
-			else
-			{
-				print "Once $tstmp \n";
-				$total_blocks{$tstmp} = [ @block_uncle ]; 
-			}
-			print "[$tstmp] [$uncles]  [$block_id] \n";
-			my ($timestamp) = /(^\d+-\d+-\d+_\d\d:\d\d:\d\d)/;
+			print "[$tstmp]#[$block_id]#[$nb_uncles] \n";
+			processLogEntry("$tstmp#$block_id#$nb_uncles");
+			
+			# print "[$tstmp] [$uncles]  [$block_id] \n";
+			#my ($timestamp) = /(^\d+-\d+-\d+_\d\d:\d\d:\d\d)/;
 			#my $t = Time::Piece->strptime($timestamp, $format);
 			#print if $t >= $start && $t <= $end;
 		}
@@ -291,4 +295,158 @@ sub trim {
 	my $input = shift;
 	$input =~ s/^\s+|\s+$//g;
 	return $input;
+}
+
+
+#alina GLOBALE#
+
+sub getTimeIndexes{
+  my $_timePrm = shift;
+  my $_AI = shift;
+  my $_HI = shift;
+  
+  # my $time = Time::Piece->strptime($_timePrm,'%a %b %d %H:%M:%S %Y');
+  my $time = Time::Piece->strptime($_timePrm,'%Y-%m-%d_%H-%M-%S');
+  
+  $$_AI = $time->strftime("%H");
+  $$_HI = 0;
+  {
+	use integer;
+	my $minute = $time->strftime("%M");
+	$$_HI = ($minute+0)/10;
+  }  
+}
+sub getPreviousIndex{
+  my $crtAI = shift;
+  my $crtHI = shift;
+  my $prevAI = shift;
+  my $prevHI = shift;
+
+  $$prevAI = 0;
+  $$prevHI = 0;
+ 
+  if ($crtHI == 0)
+  {
+    $$prevHI = 5;  
+    $$prevAI = $crtAI - 1;
+  }
+  else
+  {
+    $$prevHI = $crtHI - 1;  
+    $$prevAI = $crtAI;
+  } 
+}
+
+sub processLogEntry
+{
+  my ($_message) = @_;
+
+  #printf("MESSAGE: %s\n",$_message);
+
+  my (@words) = split /#/, $_message;
+  my $timeStamp = $words[0];
+  my $blockID = $words[1];
+  my $uncles = $words[2];
+  
+  #printf("time %s\n",$timeStamp);
+ 
+  my $AI = 0;
+  my $HI = 0;
+  getTimeIndexes($timeStamp,\$AI,\$HI);
+
+  if (!defined $_24HrsBlocks[$AI]{$HI}{$blockID})
+  {
+    $_24HrsBlocks[$AI]{$HI}{$blockID} = $uncles;
+  }
+}
+
+sub getPrevious{
+  my ($noOfTF) = @_;
+  my $crtTime = localtime;
+  my $HI = 0;
+  my $AI = 0;  
+  my $pHI = 0;
+  my $pAI = 0;
+  
+  getTimeIndexes($crtTime,\$AI,\$HI);
+  getPreviousIndex($AI,$HI,\$pAI,\$pHI);
+  
+  print " ===> we start with AI $pAI and HI $pHI\n";
+  
+  @lastXBlocks = ();
+  my $noOfChunks = 0;
+  my $noOfBlocks = 0;
+  my $noOfUncles = 0;
+  my $niceKey = '';
+
+  while (  $noOfChunks < $noOfTF )
+  {
+      #print "chunkNo $noOfChunks AI $ai HI $hi\n";
+      #print Dumper $_24HrsBlocks[$ai]{$hi};
+      
+      my $low = $pHI*10;
+      my $high = ($pHI+1)*10 -1;
+      $niceKey = sprintf("%02s:%02s:00-%02s:%02s:59",$pAI,$low,$pAI,$high);
+    
+      my $noOfBlocks = 0;
+      my $noOfUncles = 0;
+    
+      #print "niceKey is $niceKey chunkNo is $noOfChunks \n";
+      #$lastXBlocks[$noOfChunks]{$niceKey} = {};
+      
+      $lastXBlocks[$noOfChunks]{'timeFrame'} = $niceKey;
+      $lastXBlocks[$noOfChunks]{'blocks'} = {};
+      foreach my $id (keys %{$_24HrsBlocks[$pAI]{$pHI}})
+      {
+	$lastXBlocks[$noOfChunks]{'blocks'}{$id} = $_24HrsBlocks[$pAI]{$pHI}{$id};
+	$noOfBlocks = $noOfBlocks + 1;
+	$noOfUncles = $noOfUncles + $_24HrsBlocks[$pAI]{$pHI}{$id};
+      }
+      
+      $lastXBlocks[$noOfChunks]{'noOfBlocks'} = $noOfBlocks;
+      $lastXBlocks[$noOfChunks]{'uncles'} = $noOfUncles;
+      $noOfChunks = $noOfChunks + 1;
+      $AI = $pAI;
+      $HI = $pHI;
+      getPreviousIndex($AI,$HI,\$pAI,\$pHI);
+  }
+  
+    
+}
+
+sub getCrt{
+
+  #my %crtBlocks = ();
+
+  my $HI = 0;
+  my $AI = 0; 
+  
+  %crtBlocks = ();
+  
+  my $noOfBlocks = 0;
+  my $noOfUncles = 0;
+      
+  my $crtTime = localtime;
+  getTimeIndexes($crtTime,\$AI,\$HI);
+  
+  my $low = $HI*10;
+  my $high = ($HI+1)*10 -1;
+  my $niceKey = sprintf("%02s:%02s:00-%02s:%02s:59",$AI,$low,$AI,$high);
+  $crtBlocks{'timeFrame'} = $niceKey;
+  $crtBlocks{'blocks'} = {};
+  if (defined $_24HrsBlocks[$AI])
+  {
+    #print Dumper $_24HrsBlocks[$AI]{$HI};
+    
+    foreach my $id (keys %{$_24HrsBlocks[$AI]{$HI}})
+    {
+      $crtBlocks{'blocks'}{$id}=$_24HrsBlocks[$AI]{$HI}{$id};
+      $noOfBlocks = $noOfBlocks + 1;
+      $noOfUncles = $noOfUncles + $_24HrsBlocks[$AI]{$HI}{$id};      
+    }
+  }
+  $crtBlocks{'noOfBlocks'} = $noOfBlocks;
+  $crtBlocks{'uncles'} = $noOfUncles;
+  #return \%crtBlocks;
+  #return %crtBlocks;
 }

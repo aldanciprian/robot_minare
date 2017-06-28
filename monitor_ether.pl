@@ -27,7 +27,7 @@ my $interval = 0; #seconds
 						my $date;
 						#print "[$line]";
 						chomp $line;
-						$date = `date --date="$1" +"%F_%T"`;
+						$date = `date --date="$1" +"%Y-%m-%d_%H-%M-%S"`;
 						chomp $date;
 						print $date."\t#\t";
 					}
