@@ -117,7 +117,7 @@ sub getPrevious{
       #$lastXBlocks[$noOfChunks]{$niceKey} = {};
       
       $lastXBlocks[$noOfChunks]{'timeFrame'} = $niceKey;
-      $lastXBlocks[$noOfChunks]{'blocks'} =();
+      $lastXBlocks[$noOfChunks]{'blocks'} = {};
       foreach my $id (keys %{$_24HrsBlocks[$pAI]{$pHI}})
       {
 	$lastXBlocks[$noOfChunks]{'blocks'}{$id} = $_24HrsBlocks[$pAI]{$pHI}{$id};
@@ -155,7 +155,7 @@ sub getCrt{
   my $high = ($HI+1)*10 -1;
   my $niceKey = sprintf("%02s:%02s:00-%02s:%02s:59",$AI,$low,$AI,$high);
   $crtBlocks{'timeFrame'} = $niceKey;
-  $crtBlocks{'blocks'} = ();
+  $crtBlocks{'blocks'} = {};
   if (defined $_24HrsBlocks[$AI])
   {
     #print Dumper $_24HrsBlocks[$AI]{$HI};
@@ -191,8 +191,8 @@ foreach my $message (@Messages)
 
 #print Dumper @_24HrsBlocks;
 
-#getCrt();
-#print Dumper %crtBlocks;
+getCrt();
+print Dumper %crtBlocks;
 
-getPrevious(6);
-print Dumper @lastXBlocks;
+#getPrevious(6);
+#print Dumper @lastXBlocks;
