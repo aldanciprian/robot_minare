@@ -5,11 +5,10 @@ use warnings;
 my $interval = 0; #seconds
 #while (1)
 {
-	my @etherscan_output = `lynx -pauth=amoisa:lnm_09042010_7 -dump https://etherscan.io/blocks`;
+	my @etherscan_output = `lynx -dump https://etherscan.io/blocks`;
 	my $start_print = 0;
 	foreach (@etherscan_output)
 	{
-		print "have some input\n";
 		if ( $start_print == 1)
 		{
 			#we are in the table
