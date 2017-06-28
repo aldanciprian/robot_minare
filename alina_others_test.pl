@@ -105,10 +105,10 @@ sub initExcelParamsStartup{
     		my $orderID = $cell->value;
 
     		##here I am getting a problem##
-		$Index_Of{$orderID} = $col;
-		$newIDSet{$ID} = $col;
+			$Index_Of{$orderID} = $col;
+			#$newIDSet{$ID} = $col;
     		#printf( "IndexOf %s = > %d  \n",$orderID,$Index_Of{$orderID});
-	   }
+		   }
        }
     }
   }
@@ -288,10 +288,10 @@ sub follow_others {
 
 		if ( $_->{'type'} == 0 )
 		{
-			#if ( $_->{'accepted_speed'} > 0 )
-			if ( $_->{'workers'} > 0 )
+			if ( $_->{'accepted_speed'} > 0 )
+			#if ( $_->{'workers'} > 0 )
 			{
-				if  ( ($_->{'price'} > ($min_price - 0.0010) )  &&  ( $_->{'price'} < ( $min_price + 0.0010 )   )  )
+				if  ( ($_->{'price'} > ($min_price - 0.0100) )  &&  ( $_->{'price'} < ( $min_price + 0.0100 )   )  )
 				{
 					#print "$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";					
 					print "$tstmp#$_->{'id'}#$_->{'price'}\n";					
