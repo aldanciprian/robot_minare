@@ -9,7 +9,6 @@ use Time::localtime;
 use Time::Piece;
 
 
-
 #alina GLOBALE#
 my @_24HrsBlocks = ();
 my %crtBlocks =();
@@ -111,7 +110,7 @@ while (1)
 	# }
 	#alina end new
 
-	#keep_price_to_min();
+	keep_price_to_min();
 	sleep  $interval;
 }
 
@@ -138,10 +137,11 @@ sub get_json
 }
 
 sub timestamp {
-  my $t = localtime;
-  return sprintf( "%04d-%02d-%02d_%02d-%02d-%02d",
-                  $t->year + 1900, $t->mon + 1, $t->mday,
-                  $t->hour, $t->min, $t->sec );
+  # my $t = localtime;
+  # return sprintf( "%04d-%02d-%02d_%02d-%02d-%02d",
+                  # $t->year + 1900, $t->mon + 1, $t->mday,
+                  # $t->hour, $t->min, $t->sec );
+	return localtime;
 }
 sub keep_price_to_min {
 	$decoded_json = get_json( "https://api.nicehash.com/api?method=orders.get&location=0&algo=$algo" );
@@ -204,6 +204,7 @@ sub keep_price_to_min {
 	{
 		my $hashref_temp = \%$_;	
 		print "$date:\t$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";
+		print $fh "$date:\t$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";		
 		if ($hashref_temp->{'id'} == $target_order)
 		{
 			foreach ( keys%{ $hashref_temp } ){
@@ -211,9 +212,10 @@ sub keep_price_to_min {
 			}
 		}
 	}
+	return;
 	if ( $target_order == 0 )
 	{
-		next;
+		return;
 	}
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
