@@ -13,7 +13,7 @@ open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
 #while (1)
 {
 	my @etherscan_output = `lynx -dump https://etherscan.io/blocks`;
-	 `lynx -dump https://etherscan.io/blocks > ./monitor_ether_dump/$dump_date_log`;
+	`lynx -dump https://etherscan.io/blocks > ./monitor_ether_dump/$dump_date_log`;
 	my $start_print = 0;
 	foreach (@etherscan_output)
 	{

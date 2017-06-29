@@ -81,7 +81,17 @@ my $decoded_json;
         #};
 
 $decoded_json = get_json("https://api.nanopool.org/v1/eth/user/$eth_add");
-print Dumper $decoded_json;
+# print Dumper $decoded_json;
+print timestamp()." ";
+print "$decoded_json->{'data'}->{'balance'} ";
+print "$decoded_json->{'data'}->{'hashrate'} - ";
+print "$decoded_json->{'data'}->{'workers'}[0]->{'hashrate'} ";
+print "$decoded_json->{'data'}->{'workers'}[0]->{'lastShare'} \n";
+
+# $decoded_json = get_json("https://api.nanopool.org/v1/eth/network/lastblocknumber");
+# $decoded_json = get_json("https://api.nanopool.org/v1/eth/shareratehistory/$eth_add");
+# print Dumper $decoded_json;
+# print "last block number $decoded_json->{'data'} \n";
 #gets url returns result object in json decoded  
 sub get_json
 {
@@ -91,14 +101,14 @@ sub get_json
 	# 'get' is exported by LWP::Simple; install LWP from CPAN unless you have it.
 	# You need it or something similar (HTTP::Tiny, maybe?) to get web pages.
 	#$json = get( $url );
-	print "curl --silent $url\n";
+	# print "curl --silent $url\n";
 	$json = `curl  --silent $url `;
 	warn "Could not get $url  !" unless defined $json;
 	#print $json;
 
 
 	# Decode the entire JSON
-	print "$json\n";
+	#print "$json\n";
 	$decoded_json = decode_json( $json );
 	return $decoded_json
 
