@@ -98,19 +98,25 @@ while (1)
 	print "\n";
 	print $fh "\n";
 	
+	##alina timeDiff
+        my $crtTime =   Time::Piece->strptime($while_tstmp,'%Y-%m-%d_%H-%M-%S');
+        my $minute = 0;
+        {
+          use integer;
+          $minute = $crtTime->strftime("%M");
+    	  $minute = ($minute+0)/10;
+        }
+        my $startMinute = sprintf("%02s",$minute);
+        my $startTime = $crtTime->strftime("%Y-%m-%d_%H-$startMinute-00");
+        $startTime = Time::Piece->strptime($startTime,'%Y-%m-%d_%H-%M-%S');
+ 	my $endMinute = sprintf("%02s",($minute+1)*10 - 1);
+        my $endTime = $crtTime->strftime("%Y-%m-%d_%H-$endMinute-59");
+        $endTime = Time::Piece->strptime($endTime,'%Y-%m-%d_%H-%M-%S');
+						
+        my $startDiff = $crtTime - $startTime;
+	my $endDiff = $endTime - $crtTime;
 	
-	##alina necompilat
-	my $h=0;
-	my $m=0;
-	getTimeIndexes($while_tstmp,\$h,\$m);
-	my $endTime =   Time::Piece->strptime($while_tstmp,'%Y-%m-%d_%H-%M-%S');	
-	my $startM= sprintf("%02s",$m*10);
-	my $startTime = $endTime->strftime("%Y-%m-%d_%H-$startM-00");	
-	$startTime = Time::Piece->strptime($startTime,'%Y-%m-%d_%H-%M-%S');
-
-	my $diff = $endTime - $startTime;
-
-	if ($diff > 180 )
+																		        if (($startDiff > 180 ) && ( $endDiff < 300))
 	{
 	  #do something
 	  print "mai mult de 3 de la inceput\n";
