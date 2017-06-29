@@ -5,7 +5,7 @@ use warnings;
 my $interval = 0; #seconds
 my $dump_date = `date  +"%Y_%m_%d_%H_%M_%S"`;
 # print $dump_date;
-chomp($dump_date);
+chomp ($dump_date);
 my $dump_date_log = $dump_date."_log.txt";
 
 my $filename = 'monitor_ether_log.txt';

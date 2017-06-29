@@ -87,10 +87,18 @@ while (1)
 	print "============================= FOLLOW NANOPOOL $while_tstmp  $$ ======================\n";
 	count_blocks_tick();
 	getCrt();
-	print "timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  \n";
-	print $fh "TimeStamp: $while_tstmp timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  \n";
+	print "timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'} - ";
+	print $fh "TimeStamp: $while_tstmp timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  - ";
+	foreach (keys (%{$crtBlocks{'blocks'}}))
+	{
+		print "$_ ";
+		print $fh "$_ ";
+	}
+	print "\n";
+	print $fh "\n";
+	
 	#print "$crtBlocks{'timeFrame'}";
-	print Dumper %crtBlocks;	
+	# print Dumper %crtBlocks;	
 	#keep_price_to_min();
 	sleep  $interval;
 }
