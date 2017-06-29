@@ -49,6 +49,37 @@ my $decoded_json;
 #print Dumper $decoded_json;
 #print "balance $decoded_json->{'data'}->{'balance'} status $decoded_json->{'data'}->{'status'} \n" ;
 
+
+#$VAR1 = {
+          #'data' => {
+                      #'balance' => '0.00012814',
+                      #'unconfirmed_balance' => '0.00000000',
+                      #'workers' => [
+                                     #{
+                                       #'hashrate' => '76.5',
+                                       #'lastShare' => 1498724384,
+                                       #'avg_h1' => '35.4',
+                                       #'id' => 'aldanciprian',
+                                       #'avg_h24' => '1.5',
+                                       #'avg_h3' => '11.8',
+                                       #'avg_h6' => '5.9',
+                                       #'avg_h12' => '3.0',
+                                       #'rating' => 0
+                                     #}
+                                   #],
+                      #'hashrate' => '76.5',
+                      #'avgHashrate' => {
+                                         #'h1' => '35.4',
+                                         #'h6' => '5.9',
+                                         #'h3' => '11.8',
+                                         #'h12' => '3.0',
+                                         #'h24' => '1.5'
+                                       #},
+                      #'account' => '0x01e4817973708a034014a5ffac6514862bc1ff5b'
+                    #},
+          #'status' => bless( do{\(my $o = 1)}, 'JSON::PP::Boolean' )
+        #};
+
 $decoded_json = get_json("https://api.nanopool.org/v1/eth/user/$eth_add");
 print Dumper $decoded_json;
 #gets url returns result object in json decoded  

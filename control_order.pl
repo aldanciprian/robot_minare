@@ -51,6 +51,12 @@ my $target_price = 0; #current target price
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
 
 
+my $filename = 'control_order_log.txt';
+open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
+
+
+
+
 sub get_json;
 sub timestamp;
 sub keep_price_to_min;
@@ -77,12 +83,14 @@ for my $k (0..5)
 
 while (1) 
 {
-	print "============================= FOLLOW NANOPOOL ".timestamp()."  $$ ======================\n";
+	my $while_tstmp = timestamp();
+	print "============================= FOLLOW NANOPOOL $while_tstmp  $$ ======================\n";
 	count_blocks_tick();
 	getCrt();
 	print "timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  \n";
+	print $fh "TimeStamp: $while_tstmp timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  \n";
 	#print "$crtBlocks{'timeFrame'}";
-	# print Dumper %crtBlocks;	
+	print Dumper %crtBlocks;	
 	#keep_price_to_min();
 	sleep  $interval;
 }
@@ -460,3 +468,6 @@ sub getCrt{
   #return \%crtBlocks;
   #return %crtBlocks;
 }
+
+
+close $fh;
