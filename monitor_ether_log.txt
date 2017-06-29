@@ -1,0 +1,104 @@
+   [47]3946854 2 mins ago [48]71 0 [49]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [50]3946853 3 mins ago [51]115 0 [52]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [80]3946843 4 mins ago [81]48 1 [82]Nanopool 4729525 960.828 TH
+ 2017-06-29_11-19-18      Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0) 3946843 
+   [83]3946842 5 mins ago [84]89 0 [85]Nanopool 4724937 960.221 TH
+ 2017-06-29_11-19-10      Uncles Reward: 0 3946842 
+   [104]3946835 8 mins ago [105]129 0 [106]Nanopool 4725011 964.432 TH
+ 2017-06-29_11-15-29      Uncles Reward: 0 3946835 
+   [47]3946854 2 mins ago [48]71 0 [49]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [50]3946853 3 mins ago [51]115 0 [52]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [80]3946843 5 mins ago [81]48 1 [82]Nanopool 4729525 960.828 TH
+ 2017-06-29_11-19-18      Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0) 3946843 
+   [83]3946842 5 mins ago [84]89 0 [85]Nanopool 4724937 960.221 TH
+ 2017-06-29_11-19-10      Uncles Reward: 0 3946842 
+   [104]3946835 8 mins ago [105]129 0 [106]Nanopool 4725011 964.432 TH
+ 2017-06-29_11-15-29      Uncles Reward: 0 3946835 
+   [65]3946854 3 mins ago [66]71 0 [67]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [68]3946853 3 mins ago [69]115 0 [70]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [98]3946843 5 mins ago [99]48 1 [100]Nanopool 4729525 960.828 TH
+ 2017-06-29_11-19-18      Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0) 3946843 
+   [101]3946842 5 mins ago [102]89 0 [103]Nanopool 4724937 960.221 TH
+ 2017-06-29_11-19-10      Uncles Reward: 0 3946842 
+   [65]3946854 3 mins ago [66]71 0 [67]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [68]3946853 3 mins ago [69]115 0 [70]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [98]3946843 5 mins ago [99]48 1 [100]Nanopool 4729525 960.828 TH
+ 2017-06-29_11-19-18      Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0) 3946843 
+   [101]3946842 5 mins ago [102]89 0 [103]Nanopool 4724937 960.221 TH
+ 2017-06-29_11-19-10      Uncles Reward: 0 3946842 
+   [68]3946854 3 mins ago [69]71 0 [70]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [71]3946853 4 mins ago [72]115 0 [73]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [101]3946843 5 mins ago [102]48 1 [103]Nanopool 4729525 960.828 TH
+ 2017-06-29_11-19-18      Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0) 3946843 
+   [104]3946842 5 mins ago [105]89 0 [106]Nanopool 4724937 960.221 TH
+ 2017-06-29_11-19-10      Uncles Reward: 0 3946842 
+   [71]3946854 3 mins ago [72]71 0 [73]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [74]3946853 4 mins ago [75]115 0 [76]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [104]3946843 6 mins ago [105]48 1 [106]Nanopool 4729525 960.828 TH
+ 2017-06-29_11-19-18      Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0) 3946843 
+   [107]3946842 6 mins ago [108]89 0 [109]Nanopool 4724937 960.221 TH
+ 2017-06-29_11-19-10      Uncles Reward: 0 3946842 
+   [77]3946854 4 mins ago [78]71 0 [79]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [80]3946853 4 mins ago [81]115 0 [82]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [110]3946843 6 mins ago [111]48 1 [112]Nanopool 4729525 960.828 TH
+ 2017-06-29_11-19-18      Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0) 3946843 
+   [113]3946842 6 mins ago [114]89 0 [115]Nanopool 4724937 960.221 TH
+ 2017-06-29_11-19-10      Uncles Reward: 0 3946842 
+   [80]3946854 4 mins ago [81]71 0 [82]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [83]3946853 4 mins ago [84]115 0 [85]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [113]3946843 6 mins ago [114]48 1 [115]Nanopool 4729525 960.828 TH
+ 2017-06-29_11-19-18      Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0) 3946843 
+   [80]3946854 4 mins ago [81]71 0 [82]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [83]3946853 4 mins ago [84]115 0 [85]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [113]3946843 6 mins ago [114]48 1 [115]Nanopool 4729525 960.828 TH
+ 2017-06-29_11-19-18      Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0) 3946843 
+   [83]3946854 4 mins ago [84]71 0 [85]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [86]3946853 5 mins ago [87]115 0 [88]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [83]3946854 4 mins ago [84]71 0 [85]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [86]3946853 5 mins ago [87]115 0 [88]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [86]3946854 5 mins ago [87]71 0 [88]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [89]3946853 5 mins ago [90]115 0 [91]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [89]3946854 5 mins ago [90]71 0 [91]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [92]3946853 5 mins ago [93]115 0 [94]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [89]3946854 5 mins ago [90]71 0 [91]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [92]3946853 5 mins ago [93]115 0 [94]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [92]3946854 5 mins ago [93]71 0 [94]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [95]3946853 6 mins ago [96]115 0 [97]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [98]3946854 5 mins ago [99]71 0 [100]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [101]3946853 6 mins ago [102]115 0 [103]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 
+   [104]3946854 6 mins ago [105]71 0 [106]Nanopool 4736296 963.277 TH
+ 2017-06-29_11-21-29      Uncles Reward: 0 3946854 
+   [107]3946853 6 mins ago [108]115 0 [109]Nanopool 4731708 963.610 TH
+ 2017-06-29_11-21-08      Uncles Reward: 0 3946853 

@@ -79,7 +79,10 @@ while (1)
 {
 	print "============================= FOLLOW NANOPOOL ".timestamp()."  $$ ======================\n";
 	count_blocks_tick();
-	getCrt();	
+	getCrt();
+	print "timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  \n";
+	#print "$crtBlocks{'timeFrame'}";
+	# print Dumper %crtBlocks;	
 	#keep_price_to_min();
 	sleep  $interval;
 }
@@ -261,6 +264,7 @@ sub count_blocks_tick {
 		#print " line [$_] \n";
 		if ( $_ =~ /(.*?)#(.*?)#(.*)/ )
 		{
+			#[2017-06-29_09-43-51] [Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0)]  [3946512]
 			my $tstmp = trim($1);
 			my $uncles = trim($2);
 			my $block_id = trim($3);
@@ -276,11 +280,11 @@ sub count_blocks_tick {
 				# $total_blocks{$tstmp} = [ @block_uncle ]; 
 			# }
 			my $nb_uncles = 0;			
-			if ( $uncles =~ /.*(\d*) Uncle.*?at.*/ )
+			if ( $uncles =~ /.*\((\d*?) Uncle.*?at.*/ )
 			{
 				$nb_uncles = $1;
 			}
-			print "[$tstmp]#[$block_id]#[$nb_uncles] \n";
+			#print "[$tstmp]#[$block_id]#[$nb_uncles] \n";
 			processLogEntry("$tstmp#$block_id#$nb_uncles");
 			
 			# print "[$tstmp] [$uncles]  [$block_id] \n";
@@ -452,6 +456,7 @@ sub getCrt{
   }
   $crtBlocks{'noOfBlocks'} = $noOfBlocks;
   $crtBlocks{'uncles'} = $noOfUncles;
+  #print "$noOfBlocks and $noOfUncles \n  ";
   #return \%crtBlocks;
   #return %crtBlocks;
 }

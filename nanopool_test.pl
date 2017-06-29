@@ -26,24 +26,31 @@ my $decoded_json;
 #print Dumper get_json("https://api.nanopool.org/v1/eth/pool/hashrate");
 #print Dumper get_json("https://api.nanopool.org/v1/eth/block_stats/10/10");
 	## 3220461
-$decoded_json = get_json("https://api.nanopool.org/v1/eth/network/lastblocknumber");
-my $delta = $decoded_json->{'data'} - 3220461 - 40  ;
-#$decoded_json = get_json("https://api.nanopool.org/v1/eth/block_stats/0/11");
-#print Dumper $decoded_json;
+#$decoded_json = get_json("https://api.nanopool.org/v1/eth/network/lastblocknumber");
+#my $delta = $decoded_json->{'data'} - 3220461 - 40  ;
+##$decoded_json = get_json("https://api.nanopool.org/v1/eth/block_stats/0/11");
+##print Dumper $decoded_json;
+##foreach (@{$decoded_json->{'data'}})
+##{
+	##my $realdate = `date --date=\@$_->{'date'}`;
+	##print " $realdate ";
+##}
+
+##$decoded_json = get_json("https://api.nanopool.org/v1/eth/blocks/3898257/1");
+#$decoded_json = get_json("https://api.nanopool.org/v1/eth/blocks/$delta/41");
+##print Dumper $decoded_json;
 #foreach (@{$decoded_json->{'data'}})
 #{
 	#my $realdate = `date --date=\@$_->{'date'}`;
-	#print " $realdate ";
+	#print "$_->{'number'} $realdate ";
 #}
 
-#$decoded_json = get_json("https://api.nanopool.org/v1/eth/blocks/3898257/1");
-$decoded_json = get_json("https://api.nanopool.org/v1/eth/blocks/$delta/41");
+#$decoded_json = get_json("https://api.nanopool.org/v1/eth/balance_hashrate/$eth_add");
 #print Dumper $decoded_json;
-foreach (@{$decoded_json->{'data'}})
-{
-	my $realdate = `date --date=\@$_->{'date'}`;
-	print "$_->{'number'} $realdate ";
-}
+#print "balance $decoded_json->{'data'}->{'balance'} status $decoded_json->{'data'}->{'status'} \n" ;
+
+$decoded_json = get_json("https://api.nanopool.org/v1/eth/user/$eth_add");
+print Dumper $decoded_json;
 #gets url returns result object in json decoded  
 sub get_json
 {
@@ -60,6 +67,7 @@ sub get_json
 
 
 	# Decode the entire JSON
+	print "$json\n";
 	$decoded_json = decode_json( $json );
 	return $decoded_json
 
