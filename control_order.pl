@@ -46,6 +46,8 @@ my $decline_price_int = 0; # we need 10 mins
 my $decline_price_int_limit = (600 / $interval) + 1; # we need 10 mins
 my $nr_bellow_limit = 3; # nr of orders bellow mine
 my $target_price = 0; #current target price
+my $blocks_threshold = 3; #threshold for number of blocks from start of timeframe
+my $currentHighSpeed = 0; # on off for current mining highSpeed
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
 
@@ -97,6 +99,42 @@ while (1)
 	print $fh "\n";
 	
 	
+	##alina necompilat
+	my $h=0;
+	my $m=0;
+	getTimeIndexes($while_tstmp,\$h,\$m);
+	my $endTime =   Time::Piece->strptime($while_tstmp,'%Y-%m-%d_%H-%M-%S');	
+	my $startM= sprintf("%02s",$m*10);
+	my $startTime = $endTime->strftime("%Y-%m-%d_%H-$startM-00");	
+	$startTime = Time::Piece->strptime($startTime,'%Y-%m-%d_%H-%M-%S');
+
+	my $diff = $endTime - $startTime;
+
+	if ($diff > 180 )
+	{
+	  #do something
+	  print "mai mult de 3 de la inceput\n";
+	  if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
+	  {
+		print "Should increase speed \n";
+		$currentHighSpeed = 1;
+		#increase speed
+	  }
+	}
+	else
+	{
+		print "mai putin de 3 min de la inceput \n";
+
+		if ( $currentHighSpeed == 1 )
+		{
+			#decrease speed	  
+			print "Should keep speed to min 0.1  \n";
+		}
+		$currentHighSpeed = 0 ;
+	}
+	#end alina necompilat
+	
+	
 	#print "$crtBlocks{'timeFrame'}";
 
 	# print Dumper %crtBlocks;	
@@ -137,11 +175,12 @@ sub get_json
 }
 
 sub timestamp {
-  # my $t = localtime;
-  # return sprintf( "%04d-%02d-%02d_%02d-%02d-%02d",
-                  # $t->year + 1900, $t->mon + 1, $t->mday,
-                  # $t->hour, $t->min, $t->sec );
-	return localtime;
+   my $t = localtime;
+   return sprintf( "%04d-%02d-%02d_%02d-%02d-%02d",
+                  $t->year, $t->mon + 1, $t->mday,
+                  $t->hour, $t->min, $t->sec );
+	# %Y-%m-%d_%H-%M-%S				  
+	# return localtime;
 }
 sub keep_price_to_min {
 	$decoded_json = get_json( "https://api.nicehash.com/api?method=orders.get&location=0&algo=$algo" );
