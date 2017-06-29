@@ -48,6 +48,10 @@ my $nr_bellow_limit = 3; # nr of orders bellow mine
 my $target_price = 0; #current target price
 my $blocks_threshold = 3; #threshold for number of blocks from start of timeframe
 my $currentHighSpeed = 0; # on off for current mining highSpeed
+my $specific_order; # the hash of the target order	
+
+my $max_speed = 2;
+my $min_speed = 0.1;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
 
@@ -61,12 +65,16 @@ open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
 sub get_json;
 sub timestamp;
 sub keep_price_to_min;
+sub decrease_price;
+sub decrease_speed;
+sub increase_speed;
 sub count_blocks_tick;
 sub getTimeIndexes;
 sub getPreviousIndex;
 sub processLogEntry;
 sub getPrevious;
 sub getCrt;
+
 
 #init
 #init 24HRS array
@@ -86,6 +94,7 @@ while (1)
 {
 	my $while_tstmp = timestamp();
 	print "============================= FOLLOW NANOPOOL $while_tstmp  $$ ======================\n";
+	print "Start ".timestamp()."\n";
 	count_blocks_tick();
 	getCrt();
 	print "timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'} - ";
@@ -99,44 +108,59 @@ while (1)
 	print $fh "\n";
 	
 	##alina timeDiff
-        my $crtTime =   Time::Piece->strptime($while_tstmp,'%Y-%m-%d_%H-%M-%S');
-        my $minute = 0;
-        {
-          use integer;
-          $minute = $crtTime->strftime("%M");
-    	  $minute = ($minute+0)/10;
-        }
-        my $startMinute = sprintf("%02s",$minute);
-        my $startTime = $crtTime->strftime("%Y-%m-%d_%H-$startMinute-00");
-        $startTime = Time::Piece->strptime($startTime,'%Y-%m-%d_%H-%M-%S');
- 	my $endMinute = sprintf("%02s",($minute+1)*10 - 1);
-        my $endTime = $crtTime->strftime("%Y-%m-%d_%H-$endMinute-59");
-        $endTime = Time::Piece->strptime($endTime,'%Y-%m-%d_%H-%M-%S');
-						
-        my $startDiff = $crtTime - $startTime;
-	my $endDiff = $endTime - $crtTime;
+	my $crtTime =   Time::Piece->strptime($while_tstmp,'%Y-%m-%d_%H-%M-%S');
+	my $minute = 0;
+	{
+	  use integer;
+	  $minute = $crtTime->strftime("%M");
+	  #print "zeci de minute ".((($minute+0)/10)*10)."\n";
+	  $minute = (($minute+0)/10)*10;
+	}
+	my $startMinute = sprintf("%02s",$minute);
+	my $startTime = $crtTime->strftime("%Y-%m-%d_%H-$startMinute-00");
+	$startTime = Time::Piece->strptime($startTime,'%Y-%m-%d_%H-%M-%S');
+	# print "crt time $crtTime $minute $startMinute \n";
+	# print "start time $startTime \n";
 	
-																		        if (($startDiff > 180 ) && ( $endDiff < 300))
+	my $endMinute = sprintf("%02s",($minute+9));
+	my $endTime = $crtTime->strftime("%Y-%m-%d_%H-$endMinute-59");
+	$endTime = Time::Piece->strptime($endTime,'%Y-%m-%d_%H-%M-%S');
+	# print "end time $endTime \n";				
+	my $startDiff = $crtTime - $startTime;
+	my $endDiff = $endTime - $crtTime;
+	print "start end diff $startDiff  $endDiff \n ";
+	if (($startDiff > 180 ) && ( $endDiff > 280))
 	{
 	  #do something
-	  print "mai mult de 3 de la inceput\n";
+	  print "in interval \n";
 	  if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
 	  {
-		print "Should increase speed \n";
-		$currentHighSpeed = 1;
-		#increase speed
+		if ( $currentHighSpeed == 0 )
+		{
+			print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+			print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+			$currentHighSpeed = 1;
+			#increase speed
+			increase_speed();
+		}
 	  }
 	}
 	else
 	{
-		print "mai putin de 3 min de la inceput \n";
-
-		if ( $currentHighSpeed == 1 )
+		print "in afara intervalului \n";
+		
+		if ( $endDiff < 40 )
 		{
-			#decrease speed	  
-			print "Should keep speed to min 0.1  \n";
+			#the last 40 sec of the interval reset to 0.1
+			if ( $currentHighSpeed == 1 )
+			{
+				#decrease speed	  
+				print "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+				print $fh "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";				
+				$currentHighSpeed = 0 ;						
+				decrease_speed();
+			}
 		}
-		$currentHighSpeed = 0 ;
 	}
 	#end alina necompilat
 	
@@ -153,8 +177,31 @@ while (1)
 	  # print $fh "TimeStamp: $while_tstmp timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'}  \n";
 	# }
 	#alina end new
+	
+	$specific_order	= get_specific_order_hash();
+	if ( $currentHighSpeed == 1 )
+	{
+		print "keep_price_to_min \n";
+		keep_price_to_min(\%$specific_order);	
+	}
+	else
+	{
+		print "just decrease_price \n";	
+		decrease_price();
+		decrease_speed();
+	}
 
-	keep_price_to_min();
+	print "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} $specific_order->{'accepted_speed'} $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";
+	print $fh "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} $specific_order->{'accepted_speed'}  $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";		
+
+	
+	
+	if ($decline_price_int > 0 )
+	{
+		$decline_price_int--;
+	}	
+	
+	print "Stop ".timestamp()."\n";	
 	sleep  $interval;
 }
 
@@ -171,7 +218,7 @@ sub get_json
 	#print "curl --silent $url \n" ;
 	#$json = `curl --silent $url`;
 	warn "Could not get $url  !" unless defined $json;
-
+	# print $json;
 
 	# Decode the entire JSON
 	$decode_json = decode_json( $json );
@@ -189,13 +236,15 @@ sub timestamp {
 	# return localtime;
 }
 sub keep_price_to_min {
+	my $local_specific_order = shift;
 	$decoded_json = get_json( "https://api.nicehash.com/api?method=orders.get&location=0&algo=$algo" );
 	#print Dumper $decoded_json;
 	#print ref($decoded_json->{'result'}->{'orders'});
 	my $min_price = 1000000;
 	my $min_fixed_price = 1000000; 
 	my @active_orders;
-	my $specific_order;
+
+	
 	foreach (@{$decoded_json->{'result'}->{'orders'}})
 	{
 
@@ -228,36 +277,12 @@ sub keep_price_to_min {
 					}
 				}
 			}
-			if ( $_->{'id'} == $target_order )
-			{
-				my $hashref_temp = \%$_;	
-				foreach ( keys%{ $hashref_temp } ){
-					$specific_order->{ $_ } = $hashref_temp->{ $_ } ; 
-				}
-				print "$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";					
-			}
 		}
 	}
 	print "\nTIMESTAMP ".timestamp()." min price: $min_price\n";
-	$decoded_json = get_json( "https://api.nicehash.com/api?method=orders.get&my&id=$apiid&key=$apikey&key&location=0&algo=$algo" );	
-	my $date_unformated = $decoded_json->{'result'}->{'timestamp'};
-	$date= `date --date=\@$date_unformated`;
-	chomp($date);
-	##print Dumper $decoded_json;
-	print "my orders: \n";
-	foreach (@{$decoded_json->{'result'}->{'orders'}})
-	{
-		my $hashref_temp = \%$_;	
-		print "$date:\t$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";
-		print $fh "$date:\t$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";		
-		if ($hashref_temp->{'id'} == $target_order)
-		{
-			foreach ( keys%{ $hashref_temp } ){
-				$specific_order->{ $_ } = $hashref_temp->{ $_ } ; 
-			}
-		}
-	}
-	return;
+
+    print "local_specific_order $local_specific_order->{'id'} $local_specific_order->{'price'}\n ";
+	
 	if ( $target_order == 0 )
 	{
 		return;
@@ -265,68 +290,65 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		$target_price = $min_price + 0.0002;
-		if ( $specific_order->{'price'} > $target_price )
+		$target_price = $min_price + 0.0003;
+		if ( $local_specific_order->{'price'} > $target_price )
 		{
 			#decrease
-			if ( ($specific_order->{'price'} - $target_price ) > 0.0002 )
+			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0002 )
 			{
-				print timestamp()." DOWN  ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
+				print timestamp()." DOWN  ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
 				#decrese speed
-				if ( $decline_price_int == 0 )
-				{
-					$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$specific_order->{'id'}");
-					print Dumper $decoded_json;
-					if ( exists $decoded_json->{'result'}->{'success'} )
-					{
-						print "decrease success \n";
-						$decline_price_int = $decline_price_int_limit;
-					}
-					else
-					{
-						print  "decrease error \n";
-					}
-				}
+				decrease_price();
 			}
 			else
 			{
-				print timestamp()." Could go DOWN ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
+				print timestamp()." Could go DOWN ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
 
 			}
 		}
 		else
 		{
 			#increase
-			if ($specific_order->{'price'} < $target_price )
+			if ($local_specific_order->{'price'} < $target_price )
 			{
-				print timestamp()." UP  ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
+				my $increase_price = 0;
+				
+				if ($target_price - $local_specific_order->{'price'} > 0.0010 )
+				{
+					#increase direct
+					$increase_price = $target_price;
+				}
+				else
+				{
+					#increase incremental					
+					$increase_price = $local_specific_order->{'price'} +  0.0001;
+				}
+
+				print timestamp()." UP  ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
 				#print "to increase \n";
-				my $increase_price = $specific_order->{'price'} +  0.0001;
-				print "increase price with $increase_price \n";
-				$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price&id=$apiid&key=$apikey&location=0&algo=$algo&order=$specific_order->{'id'}&price=$increase_price");
+				
+				print "increase price to $increase_price \n";
+				$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price&id=$apiid&key=$apikey&location=0&algo=$algo&order=$local_specific_order->{'id'}&price=$increase_price");
 				#print Dumper $decoded_json;		
+				
 				
 			}
 			else
 			{
 				#constant
-				print timestamp()." CONST  ".($specific_order->{'price'} - $target_price)." $specific_order->{'price'} $target_price $min_price\n";
-				if ($specific_order->{'workers'} == 0 )
-				{
-					my $increase_price = $specific_order->{'price'} +  0.0001;
-					print "special condition increase price with $increase_price \n";
-					$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price&id=$apiid&key=$apikey&location=0&algo=$algo&order=$specific_order->{'id'}&price=$increase_price");
+				print timestamp()." CONST  ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
+				# if ($local_specific_order->{'workers'} == 0 )
+				# {
+					# my $increase_price = $local_specific_order->{'price'} +  0.0001;
+					# print "special condition increase price with $increase_price \n";
+					# $decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price&id=$apiid&key=$apikey&location=0&algo=$algo&order=$local_specific_order->{'id'}&price=$increase_price");
 					#print Dumper $decoded_json;		
 					
-				}
+				# }
 			}
 		}
 	}
 	
-	if ($decline_price_int > 0 )
-	{
-		$decline_price_int--;
-	}
 }
 
 sub count_blocks_tick {
@@ -534,6 +556,58 @@ sub getCrt{
   #print "$noOfBlocks and $noOfUncles \n  ";
   #return \%crtBlocks;
   #return %crtBlocks;
+}
+
+
+sub decrease_price
+{
+	# if ( $decline_price_int == 0 )
+	{
+		$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order");
+		print Dumper $decoded_json;
+		if ( exists $decoded_json->{'result'}->{'success'} )
+		{
+			print "decrease success \n";
+			$decline_price_int = $decline_price_int_limit;
+		}
+		else
+		{
+			print  "decrease error \n";
+		}
+	}
+}
+
+sub decrease_speed
+{
+	$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$min_speed");
+}
+
+sub increase_speed
+{
+	$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$max_speed");
+}
+
+sub get_specific_order_hash
+{
+	$decoded_json = get_json( "https://api.nicehash.com/api?method=orders.get&my&id=$apiid&key=$apikey&key&location=0&algo=$algo" );	
+	my $date_unformated = $decoded_json->{'result'}->{'timestamp'};
+	$date= `date --date=\@$date_unformated`;
+	chomp($date);
+	##print Dumper $decoded_json;
+	# print "my orders: \n";
+	foreach (@{$decoded_json->{'result'}->{'orders'}})
+	{
+		my $hashref_temp = \%$_;	
+		# print "$date:\t$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";
+		# print $fh "$date:\t$_->{'id'}\t$_->{'price'}\t$_->{'limit_speed'}\t$_->{'workers'}\t$_->{'accepted_speed'} \n";		
+		if ($hashref_temp->{'id'} == $target_order)
+		{
+			foreach ( keys%{ $hashref_temp } ){
+				$specific_order->{ $_ } = $hashref_temp->{ $_ } ; 
+			}
+		}
+	}
+	return \%$specific_order;
 }
 
 
