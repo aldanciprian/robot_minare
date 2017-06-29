@@ -91,6 +91,15 @@ while (1)
 	print $fh "TimeStamp: $while_tstmp timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  \n";
 	#print "$crtBlocks{'timeFrame'}";
 	print Dumper %crtBlocks;	
+	#alina new
+	my $noOfPrevTimeFrames = 5;
+	getPrevious(noOfPrevTimeFrames);
+	for my $i (0..noOfPrevTimeFrames-1)
+	{
+  	  print "timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'}  \n";
+	  print $fh "TimeStamp: $while_tstmp timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'}  \n";
+	}
+	#alina end new
 	#keep_price_to_min();
 	sleep  $interval;
 }
