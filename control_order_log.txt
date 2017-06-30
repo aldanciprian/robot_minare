@@ -14692,3 +14692,266 @@ TimeStamp: 2017-07-30_16-58-10 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0
 TimeStamp: 2017-07-30_16-58-10 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
 TimeStamp: 2017-07-30_16-58-10 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
 TimeStamp: 2017-07-30_16-58-10 timeframe: 16:00:00-16:09:59 blocks:  0 uncles: 0 - 
+2017-07-30_16-58-10 3104143 0.0476 0.01431656  0.10 0
+TimeStamp crt : 2017-07-30_16-58-24 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0  - 3953028 3953017 3953021 3953029 
+TimeStamp: 2017-07-30_16-58-24 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952968 3952982 3952971 3952972 3952987 
+TimeStamp: 2017-07-30_16-58-24 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-58-24 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-58-24 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-58-24 timeframe: 16:00:00-16:09:59 blocks:  0 uncles: 0 - 
+2017-07-30_16-58-24 3104143 0.0476 0.00357914  0.10 0
+TimeStamp crt : 2017-07-30_16-58-39 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0  - 3953021 3953017 3953028 3953029 
+TimeStamp: 2017-07-30_16-58-39 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952968 3952982 3952971 
+TimeStamp: 2017-07-30_16-58-39 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-58-39 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-58-39 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-58-39 timeframe: 16:00:00-16:09:59 blocks:  0 uncles: 0 - 
+2017-07-30_16-58-39 3104143 0.0476 0  0.10 0
+TimeStamp crt : 2017-07-30_16-59-25 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0  - 3953028 3953021 3953017 3953029 
+TimeStamp: 2017-07-30_16-59-25 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952968 3952971 3952982 
+TimeStamp: 2017-07-30_16-59-25 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-59-25 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-59-25 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-59-25 timeframe: 16:00:00-16:09:59 blocks:  0 uncles: 0 - 
+2017-07-30_16-59-25 3104143 0.0476 0  0.10 0
+TimeStamp crt : 2017-07-30_16-59-39 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0  - 3953029 3953021 3953017 3953028 
+TimeStamp: 2017-07-30_16-59-39 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952987 3952972 3952971 3952982 3952968 
+TimeStamp: 2017-07-30_16-59-39 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-59-39 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-59-39 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-59-39 timeframe: 16:00:00-16:09:59 blocks:  0 uncles: 0 - 
+2017-07-30_16-59-39 3104143 0.0476 0  0.10 0
+TimeStamp crt : 2017-07-30_16-59-54 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0  - 3953029 3953028 3953017 3953021 
+TimeStamp: 2017-07-30_16-59-54 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952987 3952972 3952982 3952971 3952968 
+TimeStamp: 2017-07-30_16-59-54 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-59-54 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-59-54 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_16-59-54 timeframe: 16:00:00-16:09:59 blocks:  0 uncles: 0 - 
+2017-07-30_16-59-54 3104143 0.0476 0  0.10 0
+TimeStamp crt : 2017-07-30_17-00-09 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-00-09 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953017 3953021 3953029 
+TimeStamp: 2017-07-30_17-00-09 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952968 3952982 3952971 
+TimeStamp: 2017-07-30_17-00-09 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-00-09 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-00-09 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-00-09 3104143 0.0476 0  0.10 0
+TimeStamp crt : 2017-07-30_17-00-24 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-00-24 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953021 3953017 3953029 
+TimeStamp: 2017-07-30_17-00-24 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952987 3952972 3952982 3952971 3952968 
+TimeStamp: 2017-07-30_17-00-24 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-00-24 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-00-24 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-00-24 3104143 0.0476 0  0.10 3
+TimeStamp crt : 2017-07-30_17-00-39 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-00-39 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953017 3953021 3953029 
+TimeStamp: 2017-07-30_17-00-39 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952968 3952982 3952971 
+TimeStamp: 2017-07-30_17-00-39 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-00-39 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-00-39 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-00-39 3104143 0.0476 0  0.10 3
+TimeStamp crt : 2017-07-30_17-00-54 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-00-54 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953021 3953017 3953028 
+TimeStamp: 2017-07-30_17-00-54 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952971 3952982 3952968 3952987 3952972 
+TimeStamp: 2017-07-30_17-00-54 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-00-54 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-00-54 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-00-54 3104143 0.0476 0.01073742  0.10 5
+TimeStamp crt : 2017-07-30_17-01-09 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-01-09 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953021 3953017 3953028 3953029 
+TimeStamp: 2017-07-30_17-01-09 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952982 3952971 3952968 3952987 3952972 
+TimeStamp: 2017-07-30_17-01-09 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-01-09 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-01-09 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-01-09 3104143 0.0476 0.01073742  0.10 5
+TimeStamp crt : 2017-07-30_17-01-24 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-01-24 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953021 3953017 3953028 3953029 
+TimeStamp: 2017-07-30_17-01-24 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952971 3952982 3952968 3952987 3952972 
+TimeStamp: 2017-07-30_17-01-24 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-01-24 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-01-24 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-01-24 3104143 0.0476 0.08232021  0.10 4
+TimeStamp crt : 2017-07-30_17-02-39 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-02-39 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953017 3953021 3953029 
+TimeStamp: 2017-07-30_17-02-39 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952968 3952982 3952971 
+TimeStamp: 2017-07-30_17-02-39 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-02-39 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-02-39 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-02-39 3104143 0.0476 0.08232021  0.10 4
+TimeStamp crt : 2017-07-30_17-02-53 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-02-53 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953021 3953017 3953028 
+TimeStamp: 2017-07-30_17-02-53 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952982 3952971 3952968 3952987 3952972 
+TimeStamp: 2017-07-30_17-02-53 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-02-53 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-02-53 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-02-53 3104143 0.0476 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-03-08 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-03-08 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953021 3953017 3953028 3953029 
+TimeStamp: 2017-07-30_17-03-08 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952971 3952982 3952968 3952987 3952972 
+TimeStamp: 2017-07-30_17-03-08 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-03-08 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-03-08 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-03-08 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-03-23 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-03-23 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953021 3953017 3953029 
+TimeStamp: 2017-07-30_17-03-23 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952987 3952972 3952982 3952971 3952968 
+TimeStamp: 2017-07-30_17-03-23 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-03-23 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-03-23 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-03-23 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-03-37 timeframe: 17:00:00-17:09:59 blocks:  0 uncles: 0  - 
+TimeStamp: 2017-07-30_17-03-37 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953028 3953021 3953017 
+TimeStamp: 2017-07-30_17-03-37 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952987 3952972 3952971 3952982 3952968 
+TimeStamp: 2017-07-30_17-03-37 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-03-37 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-03-37 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-03-37 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-03-51 timeframe: 17:00:00-17:09:59 blocks:  1 uncles: 1  - 3953045 
+TimeStamp: 2017-07-30_17-03-51 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953028 3953021 3953017 
+TimeStamp: 2017-07-30_17-03-51 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952987 3952972 3952982 3952971 3952968 
+TimeStamp: 2017-07-30_17-03-51 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-03-51 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-03-51 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-03-51 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-04-06 timeframe: 17:00:00-17:09:59 blocks:  1 uncles: 1  - 3953045 
+TimeStamp: 2017-07-30_17-04-06 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953017 3953021 3953029 
+TimeStamp: 2017-07-30_17-04-06 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952968 3952982 3952971 
+TimeStamp: 2017-07-30_17-04-06 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-04-06 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-04-06 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-04-06 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-04-20 timeframe: 17:00:00-17:09:59 blocks:  1 uncles: 1  - 3953045 
+TimeStamp: 2017-07-30_17-04-20 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953021 3953017 3953028 3953029 
+TimeStamp: 2017-07-30_17-04-20 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952971 3952982 3952968 3952987 3952972 
+TimeStamp: 2017-07-30_17-04-20 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-04-20 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-04-20 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-04-20 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-04-34 timeframe: 17:00:00-17:09:59 blocks:  1 uncles: 1  - 3953045 
+TimeStamp: 2017-07-30_17-04-34 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953021 3953017 3953028 3953029 
+TimeStamp: 2017-07-30_17-04-34 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952971 3952982 3952968 3952987 3952972 
+TimeStamp: 2017-07-30_17-04-34 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-04-34 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-04-34 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-04-34 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-04-48 timeframe: 17:00:00-17:09:59 blocks:  1 uncles: 1  - 3953045 
+TimeStamp: 2017-07-30_17-04-48 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953021 3953017 3953028 
+TimeStamp: 2017-07-30_17-04-48 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952982 3952971 3952968 3952987 3952972 
+TimeStamp: 2017-07-30_17-04-48 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-04-48 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-04-48 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-04-48 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-05-04 timeframe: 17:00:00-17:09:59 blocks:  1 uncles: 1  - 3953045 
+TimeStamp: 2017-07-30_17-05-04 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953028 3953017 3953021 
+TimeStamp: 2017-07-30_17-05-04 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952968 3952971 3952982 
+TimeStamp: 2017-07-30_17-05-04 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-04 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-04 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-05-04 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-05-18 timeframe: 17:00:00-17:09:59 blocks:  1 uncles: 1  - 3953045 
+TimeStamp: 2017-07-30_17-05-18 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953028 3953021 3953017 
+TimeStamp: 2017-07-30_17-05-18 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952987 3952972 3952982 3952971 3952968 
+TimeStamp: 2017-07-30_17-05-18 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-18 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-18 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-05-18 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-05-32 timeframe: 17:00:00-17:09:59 blocks:  1 uncles: 1  - 3953045 
+TimeStamp: 2017-07-30_17-05-32 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953017 3953021 3953028 3953029 
+TimeStamp: 2017-07-30_17-05-32 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952968 3952971 3952982 3952972 3952987 
+TimeStamp: 2017-07-30_17-05-32 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-32 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-32 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-05-32 3104143 0.0471 0.08947849  0.10 0
+TimeStamp crt : 2017-07-30_17-05-46 timeframe: 17:00:00-17:09:59 blocks:  1 uncles: 1  - 3953045 
+TimeStamp: 2017-07-30_17-05-46 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953028 3953017 3953021 
+TimeStamp: 2017-07-30_17-05-46 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952968 3952971 3952982 
+TimeStamp: 2017-07-30_17-05-46 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-46 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-46 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+TimeStamp crt : 2017-07-30_17-05-57 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953051 3953045 3953052 
+TimeStamp: 2017-07-30_17-05-57 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953029 3953017 3953021 
+TimeStamp: 2017-07-30_17-05-57 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952982 3952971 3952968 
+TimeStamp: 2017-07-30_17-05-57 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-57 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-05-57 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-05-57 3104143 0.0471 0.07874107  0.10 0
+TimeStamp crt : 2017-07-30_17-06-13 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953045 3953052 3953051 
+TimeStamp: 2017-07-30_17-06-13 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953021 3953028 3953017 3953029 
+TimeStamp: 2017-07-30_17-06-13 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952971 3952982 3952968 
+TimeStamp: 2017-07-30_17-06-13 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-06-13 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-06-13 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-06-13 3104143 0.0471 0.07874107  0.10 0
+TimeStamp crt : 2017-07-30_17-06-27 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953051 3953045 3953052 
+TimeStamp: 2017-07-30_17-06-27 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953029 3953017 3953021 
+TimeStamp: 2017-07-30_17-06-27 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952971 3952982 3952968 3952972 3952987 
+TimeStamp: 2017-07-30_17-06-27 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-06-27 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-06-27 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-06-27 3104143 0.0471 0.06442451  0.10 0
+TimeStamp crt : 2017-07-30_17-06-41 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953051 3953045 3953052 
+TimeStamp: 2017-07-30_17-06-41 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953021 3953028 3953029 3953017 
+TimeStamp: 2017-07-30_17-06-41 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952987 3952982 3952971 3952968 
+TimeStamp: 2017-07-30_17-06-41 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-06-41 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-06-41 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-06-41 3104143 0.0471 0.06442451  0.10 0
+TimeStamp crt : 2017-07-30_17-06-56 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953051 3953052 3953045 
+TimeStamp: 2017-07-30_17-06-56 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953021 3953029 3953017 3953028 
+TimeStamp: 2017-07-30_17-06-56 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952968 3952971 3952982 3952987 3952972 
+TimeStamp: 2017-07-30_17-06-56 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-06-56 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-06-56 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+TimeStamp crt : 2017-07-30_17-07-04 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953051 3953045 3953052 
+TimeStamp: 2017-07-30_17-07-04 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953021 3953017 3953029 
+TimeStamp: 2017-07-30_17-07-04 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952968 3952987 3952972 3952971 3952982 
+TimeStamp: 2017-07-30_17-07-04 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-07-04 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-07-04 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-07-04 3104143 0.0471 0.02147484  0.10 0
+TimeStamp crt : 2017-07-30_17-07-19 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953051 3953052 3953045 
+TimeStamp: 2017-07-30_17-07-19 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953017 3953021 3953029 3953028 
+TimeStamp: 2017-07-30_17-07-19 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952968 3952987 3952972 3952971 3952982 
+TimeStamp: 2017-07-30_17-07-19 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-07-19 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-07-19 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-07-19 3104143 0.0471 0.00715828  0.10 0
+TimeStamp crt : 2017-07-30_17-07-34 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953045 3953052 3953051 
+TimeStamp: 2017-07-30_17-07-34 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953017 3953021 3953028 
+TimeStamp: 2017-07-30_17-07-34 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952982 3952971 3952987 3952972 3952968 
+TimeStamp: 2017-07-30_17-07-34 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-07-34 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-07-34 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+TimeStamp crt : 2017-07-30_17-07-51 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953051 3953052 3953045 
+TimeStamp: 2017-07-30_17-07-51 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953028 3953017 3953029 3953021 
+TimeStamp: 2017-07-30_17-07-51 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952968 3952971 3952987 3952982 
+TimeStamp: 2017-07-30_17-07-51 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-07-51 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-07-51 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-07-51 3104143 0.0471 0  0.10 0
+TimeStamp crt : 2017-07-30_17-08-06 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953045 3953051 3953052 
+TimeStamp: 2017-07-30_17-08-06 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953021 3953028 3953017 
+TimeStamp: 2017-07-30_17-08-06 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952968 3952971 3952987 3952982 
+TimeStamp: 2017-07-30_17-08-06 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-08-06 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-08-06 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-08-06 3104143 0.0471 0  0.10 0
+TimeStamp crt : 2017-07-30_17-08-21 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953045 3953052 3953051 
+TimeStamp: 2017-07-30_17-08-21 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953021 3953028 3953017 
+TimeStamp: 2017-07-30_17-08-21 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952972 3952968 3952971 3952987 3952982 
+TimeStamp: 2017-07-30_17-08-21 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-08-21 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-08-21 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-08-21 3104143 0.0471 0  0.10 0
+TimeStamp crt : 2017-07-30_17-08-35 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953051 3953052 3953045 
+TimeStamp: 2017-07-30_17-08-35 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953021 3953017 3953028 
+TimeStamp: 2017-07-30_17-08-35 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952971 3952987 3952982 3952972 3952968 
+TimeStamp: 2017-07-30_17-08-35 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-08-35 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-08-35 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 
+2017-07-30_17-08-35 3104143 0.0471 0  0.10 0
+TimeStamp crt : 2017-07-30_17-08-50 timeframe: 17:00:00-17:09:59 blocks:  3 uncles: 1  - 3953051 3953052 3953045 
+TimeStamp: 2017-07-30_17-08-50 timeframe: 16:50:00-16:59:59 blocks:  4 uncles: 0 - 3953029 3953021 3953017 3953028 
+TimeStamp: 2017-07-30_17-08-50 timeframe: 16:40:00-16:49:59 blocks:  5 uncles: 0 - 3952971 3952987 3952982 3952972 3952968 
+TimeStamp: 2017-07-30_17-08-50 timeframe: 16:30:00-16:39:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-08-50 timeframe: 16:20:00-16:29:59 blocks:  0 uncles: 0 - 
+TimeStamp: 2017-07-30_17-08-50 timeframe: 16:10:00-16:19:59 blocks:  0 uncles: 0 - 

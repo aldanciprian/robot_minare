@@ -656,7 +656,7 @@ sub get_specific_order_hash
 sub read_monitor_ether_log
 {
 	my @uncheck_blocks;
-	@uncheck_blocks = `cat ./monitor_ether_log.txt | grep "\s*2017" | grep -v "Nanopool" | sort | uniq | tail -40`;
+	@uncheck_blocks = `cat ./monitor_ether_log.txt | grep "2017" | grep -v "Nanopool" | sort | uniq | tail -40`;
 	foreach (@uncheck_blocks)
 	{
 		#get timestamp uncles and order id
@@ -668,7 +668,7 @@ sub read_monitor_ether_log
 			my $tstmp = trim($1);
 			my $uncles = trim($2);
 			my $block_id = trim($3);
-			print "[$tstmp] [$uncles]  [$block_id] \n";			
+			# print "[$tstmp] [$uncles]  [$block_id] \n";			
 			# my @block_uncle = ( $block_id , $uncles );
 			# if (exists $total_blocks{$tstmp})
 			# {
