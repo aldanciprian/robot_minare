@@ -42,6 +42,7 @@ do
 	then
 		if true 
 		then
+			echo "In the office"
 			#ps -ef | grep simpleNiceHash.pl | grep -v grep
 			#res=$(ps -ef | grep  simpleNiceHash.pl | grep -v grep | grep -v "vi ")
 			#if [ $? -ne 0 ]
@@ -53,16 +54,16 @@ do
 				#res=$(echo $res | awk '{print $2}')
 				#echo "simpleNiceHash.pl allready started $res"
 			#fi
-			res=$(ps -ef | grep  follow_nano.pl | grep -v grep | grep -v "vi ")
-			if [ $? -ne 0 ]
-			then
-				./follow_nano.pl 3104143 &
-				res=$(ps -ef | grep  follow_nano.pl | grep -v grep | grep -v "vi " |  awk '{print $2}' )
-				echo "Starting follow_nano.pl $res"
-			else
-				res=$(echo $res | awk '{print $2}')
-				echo "follow_nano.pl allready started $res"
-			fi
+			#res=$(ps -ef | grep  follow_nano.pl | grep -v grep | grep -v "vi ")
+			#if [ $? -ne 0 ]
+			#then
+				#./follow_nano.pl 3104143 &
+				#res=$(ps -ef | grep  follow_nano.pl | grep -v grep | grep -v "vi " |  awk '{print $2}' )
+				#echo "Starting follow_nano.pl $res"
+			#else
+				#res=$(echo $res | awk '{print $2}')
+				#echo "follow_nano.pl allready started $res"
+			#fi
 		else
 			echo "Disabled"
 		fi
