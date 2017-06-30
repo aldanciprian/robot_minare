@@ -3,17 +3,17 @@
 use strict;
 use warnings;
 my $interval = 0; #seconds
-my $dump_date = `date  +"%Y_%m_%d_%H_%M_%S"`;
-# print $dump_date;
-chomp($dump_date);
-my $dump_date_log = $dump_date."_log.txt";
+# my $dump_date = `date  +"%Y_%m_%d_%H_%M_%S"`;
+#print $dump_date;
+# chomp($dump_date);
+# my $dump_date_log = $dump_date."_log.txt";
 
 my $filename = 'monitor_ether_log.txt';
 open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
 #while (1)
 {
-	my @etherscan_output = `lynx -dump https://etherscan.io/blocks`;
-	`lynx -dump https://etherscan.io/blocks > ./monitor_ether_dump/$dump_date_log`;
+	my @etherscan_output = `lynx -connect_timeout=15 -dump https://etherscan.io/blocks`;
+	# `lynx -connect_timeout=5 -dump https://etherscan.io/blocks > ./monitor_ether_dump/$dump_date_log`;
 	my $start_print = 0;
 	foreach (@etherscan_output)
 	{
@@ -39,13 +39,19 @@ open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
 						$date = `date --date="$1" +"%Y-%m-%d_%H-%M-%S"`;
 						chomp $date;
 						print $date."\t#\t";
-						print $fh "$date ";
+						print $fh "$date#";
 					}
 					if ( $line =~ m/.*Uncles Reward.*/  )
 					{
 						chomp $line;
 						print $line."\t#\t";
-						print $fh "$line ";
+						my $nb_uncles = 0;			
+						if ( $line =~ /.*\((\d*?) Uncle.*?at.*/ )
+						{			
+							$nb_uncles = $1;
+						}
+						#print $fh "$line#";
+						print $fh "$nb_uncles#";
 						last;
 					}
 				}

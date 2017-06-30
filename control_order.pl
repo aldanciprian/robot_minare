@@ -46,11 +46,18 @@ my $decline_price_int = 0; # we need 10 mins
 my $decline_price_int_limit = (600 / $interval) + 1; # we need 10 mins
 my $nr_bellow_limit = 3; # nr of orders bellow mine
 my $target_price = 0; #current target price
-my $blocks_threshold = 3; #threshold for number of blocks from start of timeframe
+my $blocks_threshold = 2; #threshold for number of blocks from start of timeframe
 my $currentHighSpeed = 0; # on off for current mining highSpeed
 my $specific_order; # the hash of the target order	
+my $startDiffInt = 150; # 150 seconds from the start of the timeframe
+my $endDiffInt = 300; # 300 seconds until the end of the timeframe
+my $resetDiffInt = 130; # 130 seconds until the end of the timeframe to reset the speed
 
-my $max_speed = 2;
+my $old_startCrtTF = 0; # the old crt TF 
+
+
+
+my $max_speed = 2.5;
 my $min_speed = 0.1;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
@@ -63,6 +70,7 @@ open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
 
 
 sub get_json;
+sub read_monitor_ether_log;
 sub timestamp;
 sub keep_price_to_min;
 sub decrease_price;
@@ -86,6 +94,8 @@ for my $k (0..5)
 }
 }
 
+#read the last 40 blocks from log
+read_monitor_ether_log();
 
 
 
@@ -97,8 +107,8 @@ while (1)
 	print "Start ".timestamp()."\n";
 	count_blocks_tick();
 	getCrt();
-	print "timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'} - ";
-	print $fh "TimeStamp: $while_tstmp timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  - ";
+	print "timeframe crt: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'} - ";
+	print $fh "TimeStamp crt : $while_tstmp timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  - ";
 	foreach (keys (%{$crtBlocks{'blocks'}}))
 	{
 		print "$_ ";
@@ -106,6 +116,25 @@ while (1)
 	}
 	print "\n";
 	print $fh "\n";
+
+	#alina new
+	my $noOfPrevTimeFrames = 5;
+	getPrevious($noOfPrevTimeFrames);
+	for my $i (0..($noOfPrevTimeFrames-1))
+	{
+		print "timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'} - ";
+		print $fh "TimeStamp: $while_tstmp timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'} - ";
+		foreach (keys (%{$lastXBlocks[$i]{'blocks'}}))
+		{
+		  print "$_ ";
+		  print $fh "$_ ";	
+		}
+		print "\n";
+		print $fh "\n";
+	}
+	#alina end new
+
+	
 	
 	##alina timeDiff
 	my $crtTime =   Time::Piece->strptime($while_tstmp,'%Y-%m-%d_%H-%M-%S');
@@ -119,6 +148,16 @@ while (1)
 	my $startMinute = sprintf("%02s",$minute);
 	my $startTime = $crtTime->strftime("%Y-%m-%d_%H-$startMinute-00");
 	$startTime = Time::Piece->strptime($startTime,'%Y-%m-%d_%H-%M-%S');
+	
+	if ($old_startCrtTF != $startTime )
+	{
+		# a new TF begin
+		#force low speed and price decrease
+		$old_startCrtTF = $startTime;		
+		$currentHighSpeed = 0;
+		decrease_speed();
+	}
+
 	# print "crt time $crtTime $minute $startMinute \n";
 	# print "start time $startTime \n";
 	
@@ -128,8 +167,8 @@ while (1)
 	# print "end time $endTime \n";				
 	my $startDiff = $crtTime - $startTime;
 	my $endDiff = $endTime - $crtTime;
-	print "start end diff $startDiff  $endDiff \n ";
-	if (($startDiff > 180 ) && ( $endDiff > 280))
+	print "start end diff $startDiff  $endDiff [ > $startDiffInt -  > $endDiffInt ] \n ";
+	if (($startDiff > $startDiffInt ) && ( $endDiff > $endDiffInt))
 	{
 	  #do something
 	  print "in interval \n";
@@ -149,7 +188,7 @@ while (1)
 	{
 		print "in afara intervalului \n";
 		
-		if ( $endDiff < 40 )
+		if ( $endDiff < $resetDiffInt )
 		{
 			#the last 40 sec of the interval reset to 0.1
 			if ( $currentHighSpeed == 1 )
@@ -188,6 +227,7 @@ while (1)
 	{
 		print "just decrease_price \n";	
 		decrease_price();
+		
 		decrease_speed();
 	}
 
@@ -215,6 +255,8 @@ sub get_json
 	# 'get' is exported by LWP::Simple; install LWP from CPAN unless you have it.
 	# You need it or something similar (HTTP::Tiny, maybe?) to get web pages.
 	$json = get( $url );
+	#sleep 250ms
+	select(undef, undef, undef, 0.25);
 	#print "curl --silent $url \n" ;
 	#$json = `curl --silent $url`;
 	warn "Could not get $url  !" unless defined $json;
@@ -281,7 +323,7 @@ sub keep_price_to_min {
 	}
 	print "\nTIMESTAMP ".timestamp()." min price: $min_price\n";
 
-    print "local_specific_order $local_specific_order->{'id'} $local_specific_order->{'price'}\n ";
+    # print "local_specific_order $local_specific_order->{'id'} $local_specific_order->{'price'}\n ";
 	
 	if ( $target_order == 0 )
 	{
@@ -290,7 +332,7 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		$target_price = $min_price + 0.0003;
+		$target_price = $min_price + 0.0002;
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
 			#decrease
@@ -610,5 +652,47 @@ sub get_specific_order_hash
 	return \%$specific_order;
 }
 
+
+sub read_monitor_ether_log
+{
+	my @uncheck_blocks;
+	@uncheck_blocks = `cat ./monitor_ether_log.txt | grep "\s*2017" | grep -v "Nanopool" | sort | uniq | tail -40`;
+	foreach (@uncheck_blocks)
+	{
+		#get timestamp uncles and order id
+		chomp($_);
+		#print " line [$_] \n";
+		if ( $_ =~ /(.*?)#(.*?)#(.*)/ )
+		{
+			#[2017-06-29_09-43-51] [Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0)]  [3946512]
+			my $tstmp = trim($1);
+			my $uncles = trim($2);
+			my $block_id = trim($3);
+			print "[$tstmp] [$uncles]  [$block_id] \n";			
+			# my @block_uncle = ( $block_id , $uncles );
+			# if (exists $total_blocks{$tstmp})
+			# {
+				# print "Multiple $tstmp \n";
+			# }
+			# else
+			# {
+				# print "Once $tstmp \n";
+				# $total_blocks{$tstmp} = [ @block_uncle ]; 
+			# }
+			# my $nb_uncles = 0;			
+			# if ( $uncles =~ /.*\((\d*?) Uncle.*?at.*/ )
+			# {
+				# $nb_uncles = $1;
+			# }
+			#print "[$tstmp]#[$block_id]#[$nb_uncles] \n";
+			processLogEntry("$tstmp#$block_id#$uncles");
+			
+			# print "[$tstmp] [$uncles]  [$block_id] \n";
+			#my ($timestamp) = /(^\d+-\d+-\d+_\d\d:\d\d:\d\d)/;
+			#my $t = Time::Piece->strptime($timestamp, $format);
+			#print if $t >= $start && $t <= $end;
+		}
+	}
+}
 
 close $fh;
