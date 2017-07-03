@@ -64,6 +64,22 @@ do
 				#res=$(echo $res | awk '{print $2}')
 				#echo "follow_nano.pl allready started $res"
 			#fi
+			pid=$(ps -ef | grep  manage_control_order.pl | grep -v grep |  awk '{print $2}')
+			kill -9 $pid
+			sleep 3s
+			pid=$(ps -ef | grep  wdg_control_order.pl | grep -v grep |  awk '{print $2}')
+			kill -9 $pid
+			sleep 3s
+			pid=$(ps -ef | grep  control_order_previous.pl | grep -v grep |  awk '{print $2}')
+			kill -9 $pid
+			sleep 3s
+			pid=$(ps -ef | grep  monitor_ether_loop.pl | grep -v grep |  awk '{print $2}')
+			kill -9 $pid
+			sleep 3s
+			pid=$(ps -ef | grep  monitor_ether.pl | grep -v grep |  awk '{print $2}')
+			kill -9 $pid
+			sleep 3s
+			./monitor_ether_loop.pl &
 		else
 			echo "Disabled"
 		fi
