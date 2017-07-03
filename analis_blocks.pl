@@ -139,7 +139,8 @@ sub processLogEntry
 
   if (!defined $_24HrsBlocks[$AI]{$HI}{$blockID})
   {
-    $_24HrsBlocks[$AI]{$HI}{$blockID} = $uncles;
+    $_24HrsBlocks[$AI]{$HI}{$blockID}{'timeStamp'} = $timeStamp;
+    $_24HrsBlocks[$AI]{$HI}{$blockID}{'uncles'}= $uncles;
   }
 }
 
@@ -183,9 +184,10 @@ sub getPrevious{
       $lastXBlocks[$noOfChunks]{'blocks'} = {};
       foreach my $id (keys %{$_24HrsBlocks[$pAI]{$pHI}})
       {
-	$lastXBlocks[$noOfChunks]{'blocks'}{$id} = $_24HrsBlocks[$pAI]{$pHI}{$id};
+	$lastXBlocks[$noOfChunks]{'blocks'}{$id}{'uncles'} = $_24HrsBlocks[$pAI]{$pHI}{$id}{'uncles'};
 	$noOfBlocks = $noOfBlocks + 1;
-	$noOfUncles = $noOfUncles + $_24HrsBlocks[$pAI]{$pHI}{$id};
+	$noOfUncles = $noOfUncles + $_24HrsBlocks[$pAI]{$pHI}{$id}{'uncles'};
+	$lastXBlocks[$noOfChunks]{'blocks'}{$id}{'timeStamp'} = $_24HrsBlocks[$pAI]{$pHI}{$id}{'timeStamp'};
       }
       
       $lastXBlocks[$noOfChunks]{'noOfBlocks'} = $noOfBlocks;
@@ -228,9 +230,10 @@ sub getCrt{
     
     foreach my $id (keys %{$_24HrsBlocks[$AI]{$HI}})
     {
-      $crtBlocks{'blocks'}{$id}=$_24HrsBlocks[$AI]{$HI}{$id};
+      $crtBlocks{'blocks'}{$id}{'uncles'}=$_24HrsBlocks[$AI]{$HI}{$id}{'uncles'};
       $noOfBlocks = $noOfBlocks + 1;
-      $noOfUncles = $noOfUncles + $_24HrsBlocks[$AI]{$HI}{$id};      
+      $noOfUncles = $noOfUncles + $_24HrsBlocks[$AI]{$HI}{$id}{'uncles'};
+      $crtBlocks{'blocks'}{$id}{'timeStamp'}=$_24HrsBlocks[$AI]{$HI}{$id}{'timeStamp'};
     }
   }
   $crtBlocks{'noOfBlocks'} = $noOfBlocks;
