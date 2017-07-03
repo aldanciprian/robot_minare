@@ -12,7 +12,7 @@ my $filename = 'monitor_ether_log.txt';
 open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
 #while (1)
 {
-	my @etherscan_output = `lynx -connect_timeout=15 -dump https://etherscan.io/blocks`;
+	my @etherscan_output = `lynx -connect_timeout=10 -dump https://etherscan.io/blocks`;
 	# `lynx -connect_timeout=5 -dump https://etherscan.io/blocks > ./monitor_ether_dump/$dump_date_log`;
 	my $start_print = 0;
 	foreach (@etherscan_output)
@@ -28,7 +28,8 @@ open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
 				my $block_id = $1;
 				#print "$_";
 				print $fh "$_ ";
-				my @etherscan_output_block = `lynx -dump https://etherscan.io/block/$block_id`;
+				sleep 1;
+				my @etherscan_output_block = `lynx -connect_timeout=10 -dump https://etherscan.io/block/$block_id`;
 				foreach my $line (@etherscan_output_block)
 				{
 					if ( $line =~ m/.*TimeStamp.*\((.*?)\)/  )

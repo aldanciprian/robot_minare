@@ -44,13 +44,16 @@ my $algo=20;
 my $interval=10;  #seconds
 my $decline_price_int = 0; # we need 10 mins
 my $decline_price_int_limit = (600 / $interval) + 1; # we need 10 mins
-my $nr_bellow_limit = 3; # nr of orders bellow mine
 my $target_price = 0; #current target price
-my $blocks_threshold = 2; #threshold for number of blocks from start of timeframe
+my $blocks_threshold = 1; #threshold for number of blocks from start of timeframe
 my $currentHighSpeed = 0; # on off for current mining highSpeed
 my $specific_order; # the hash of the target order	
-my $startDiffInt = 150; # 150 seconds from the start of the timeframe
-my $endDiffInt = 300; # 300 seconds until the end of the timeframe
+my $startDiffInt_l1 = 60; # seconds from the start of the timeframe
+my $endDiffInt_l1 = 80; #  seconds until the end of the timeframe
+my $startDiffInt_l2 = 80; # seconds from the start of the timeframe
+my $endDiffInt_l2 = 120; #  seconds until the end of the timeframe
+my $startDiffInt_l3 = 120; # seconds from the start of the timeframe
+my $endDiffInt_l3 = 140; #  seconds until the end of the timeframe
 my $resetDiffInt = 130; # 130 seconds until the end of the timeframe to reset the speed
 
 my $old_startCrtTF = 0; # the old crt TF 
@@ -58,6 +61,9 @@ my $old_startCrtTF = 0; # the old crt TF
 
 
 my $max_speed = 2.5;
+my $l1_speed = 0.2;
+my $l2_speed = 0.4;
+my $l3_speed = 0.8;
 my $min_speed = 0.1;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
@@ -105,6 +111,15 @@ while (1)
 	my $while_tstmp = timestamp();
 	print "============================= FOLLOW NANOPOOL $while_tstmp  $$ ======================\n";
 	print "Start ".timestamp()."\n";
+	
+	# watchdog
+	my $filename_wdg = 'wdg_control_order.txt';
+	open(my $fh_wdg, '>>', $filename_wdg) or die "Could not open file '$filename_wdg' $!";
+	print $fh_wdg "$while_tstmp\n";
+	close $fh_wdg;
+	
+	
+	
 	count_blocks_tick();
 	getCrt();
 	print "timeframe crt: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'} - ";
@@ -167,38 +182,77 @@ while (1)
 	# print "end time $endTime \n";				
 	my $startDiff = $crtTime - $startTime;
 	my $endDiff = $endTime - $crtTime;
-	print "start end diff $startDiff  $endDiff [ > $startDiffInt -  > $endDiffInt ] \n ";
-	if (($startDiff > $startDiffInt ) && ( $endDiff > $endDiffInt))
+	print "start end diff $startDiff  [ $startDiffInt_l1 >  < $endDiffInt_l1 ] [ $startDiffInt_l2 >  < $endDiffInt_l2 ] [ $startDiffInt_l3 >  < $endDiffInt_l3 ] \n ";
+	
+	# if we are in high speed don't check any level intervals
+	# just do the reset near the end of the TF
+	if ( $currentHighSpeed == 1 )
 	{
-	  #do something
-	  print "in interval \n";
-	  if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
-	  {
-		if ( $currentHighSpeed == 0 )
-		{
-			print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-			print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-			$currentHighSpeed = 1;
-			#increase speed
-			increase_speed();
-		}
-	  }
-	}
-	else
-	{
-		print "in afara intervalului \n";
-		
+		print "mining with high speed \n";
 		if ( $endDiff < $resetDiffInt )
 		{
 			#the last 40 sec of the interval reset to 0.1
-			if ( $currentHighSpeed == 1 )
+			#decrease speed	  
+			print "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+			print $fh "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";				
+			$currentHighSpeed = 0 ;						
+			decrease_speed();
+		}
+	}
+	else
+	{
+		# we don't mine with high speed
+		# we need to decide in case of different levels
+		if (($startDiff > $startDiffInt_l1 ) && ( $startDiff < $endDiffInt_l1))
+		{
+		  # we are in interval l1
+		  print "in interval l1 \n";
+		  if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
+		  {
+				print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+				print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+				$currentHighSpeed = 1;
+				#increase speed
+				increase_speed($l3_speed);
+		  }
+		}
+		else
+		{
+			if (($startDiff > $startDiffInt_l2 ) && ( $startDiff < $endDiffInt_l2))
 			{
-				#decrease speed	  
-				print "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-				print $fh "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";				
-				$currentHighSpeed = 0 ;						
-				decrease_speed();
+			  # we are in interval l2
+			  print "in interval l2 \n";
+			  if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
+			  {
+					print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+					print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+					$currentHighSpeed = 1;
+					#increase speed
+					increase_speed($l2_speed);
+			  }
 			}
+			else
+			{
+				if (($startDiff > $startDiffInt_l3 ) && ( $startDiff < $endDiffInt_l3))
+				{
+				  # we are in interval l3
+				  print "in interval l3 \n";
+				  if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
+				  {
+						print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+						print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+						$currentHighSpeed = 1;
+						#increase speed
+						increase_speed($l1_speed);
+				  }
+				}
+				else
+				{
+					#we are outside of any decision interval
+					#just be sure we got to minimum
+					print "outside of all intervals - no mining ! \n";
+				}		
+			}		
 		}
 	}
 	#end alina necompilat
@@ -238,21 +292,20 @@ while (1)
 	}
 	else
 	{
-		print "just decrease_price \n";	
-		decrease_price();
-		
+		print "just decrease_price \n\n";	
+		decrease_price(\%$specific_order);		
 		decrease_speed();
 	}
 
-	print "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} $specific_order->{'accepted_speed'} $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";
-	print $fh "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} $specific_order->{'accepted_speed'}  $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";		
+	print "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} -  $specific_order->{'accepted_speed'}  - $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";
+	print $fh "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} -  $specific_order->{'accepted_speed'}  -  $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";		
 
 	
 	
-	if ($decline_price_int > 0 )
-	{
-		$decline_price_int--;
-	}	
+	# if ($decline_price_int > 0 )
+	# {
+		# $decline_price_int--;
+	# }	
 	
 	print "Stop ".timestamp()."\n";	
 	sleep  $interval;
@@ -349,11 +402,11 @@ sub keep_price_to_min {
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
 			#decrease
-			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0002 )
+			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0008 )
 			{
 				print timestamp()." DOWN  ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
 				#decrese speed
-				decrease_price();
+				decrease_price(\%$specific_order);				
 			}
 			else
 			{
@@ -616,20 +669,25 @@ sub getCrt{
 
 sub decrease_price
 {
+	my $local_specific_order = shift;	
 	if ( $target_order != 0 )
 	{
-		$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order");
-		print Dumper $decoded_json;
-		if ( exists $decoded_json->{'result'}->{'success'} )
+		# print "local_specific_order accepted_speed is $local_specific_order->{'accepted_speed'} \n";
+		if ( $local_specific_order->{'accepted_speed'} != 0 )
 		{
-			print "decrease success \n";
-			$decline_price_int = $decline_price_int_limit;
+			$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order");
+			print Dumper $decoded_json;
+			if ( exists $decoded_json->{'result'}->{'success'} )
+			{
+				print "decrease success \n";
+				$decline_price_int = $decline_price_int_limit;
+			}
+			else
+			{
+				print  "decrease error \n";
+			}
 		}
-		else
-		{
-			print  "decrease error \n";
-		}
-	}
+	}	
 }
 
 sub decrease_speed
@@ -642,9 +700,10 @@ sub decrease_speed
 
 sub increase_speed
 {
+	my $speed = shift;
 	if ($target_order != 0 )
 	{
-	$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$max_speed");
+	$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$speed");
 	}
 }
 

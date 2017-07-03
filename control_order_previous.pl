@@ -25,9 +25,6 @@ else
 	$target_order = 0;
 }
 
-#hash with block timestamp as key
-my %total_blocks;
-
 
 #nanopool
 my $eth_add = $ENV{'ETH_ADD'};
@@ -388,10 +385,10 @@ sub keep_price_to_min {
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
 			#decrease
-			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0002 )
+			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0008 )
 			{
 				print timestamp()." DOWN  ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
-				#decrese speed
+				#decrese price
 				decrease_price(\%$local_specific_order);
 			}
 			else
