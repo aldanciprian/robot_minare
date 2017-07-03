@@ -41,12 +41,13 @@ my $noOfPrevTimeFrames = 100;
 getPrevious($noOfPrevTimeFrames);
 for my $i (0..($noOfPrevTimeFrames-1))
 {
-	#print Dumper $lastXBlocks[$i];
+	 # print Dumper $lastXBlocks[$i];
 	print "timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'} - ";
-	foreach (keys (%{$lastXBlocks[$i]{'blocks'}}))
+	foreach (sort (keys (%{$lastXBlocks[$i]{'blocks'}})))
 	{
-	 # print "$_{'timeFrame'} $_ ";
-	 #print Dumper $_;
+		my %block = %{$lastXBlocks[$i]{'blocks'}{$_}};
+		print "$_  $block{'timeStamp'}  \n";
+	 # print Dumper $_;
 	}
 	print "\n";
 }
