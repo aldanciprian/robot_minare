@@ -218,6 +218,19 @@ while (1)
 	#alina end new
 	
 	$specific_order	= get_specific_order_hash();
+	if (defined $specific_order->{'id'} )	
+	{
+		#we found the target order 
+		print "\n";
+		#print " yes target order \n";
+	}
+	else
+	{
+		#we didn't found the target order
+		#print " no target order \n";
+		sleep 20;
+		next;		
+	}
 	if ( $currentHighSpeed == 1 )
 	{
 		print "keep_price_to_min \n";
@@ -603,7 +616,7 @@ sub getCrt{
 
 sub decrease_price
 {
-	# if ( $decline_price_int == 0 )
+	if ( $target_order != 0 )
 	{
 		$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order");
 		print Dumper $decoded_json;
@@ -621,12 +634,18 @@ sub decrease_price
 
 sub decrease_speed
 {
-	$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$min_speed");
+	if ($target_order != 0 )
+	{
+	$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$min_speed");	
+	}
 }
 
 sub increase_speed
 {
+	if ($target_order != 0 )
+	{
 	$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$max_speed");
+	}
 }
 
 sub get_specific_order_hash
@@ -693,6 +712,47 @@ sub read_monitor_ether_log
 			#print if $t >= $start && $t <= $end;
 		}
 	}
+	
+	#monitor_ether_loop_log
+	@uncheck_blocks = `cat ./monitor_ether_loop_log.txt | grep "2017" | grep -v "Nanopool" | sort | uniq | tail -40`;
+	foreach (@uncheck_blocks)
+	{
+		#get timestamp uncles and order id
+		chomp($_);
+		#print " line [$_] \n";
+		if ( $_ =~ /(.*?)#(.*?)#(.*)/ )
+		{
+			#[2017-06-29_09-43-51] [Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0)]  [3946512]
+			my $tstmp = trim($1);
+			my $uncles = trim($2);
+			my $block_id = trim($3);
+			# print "[$tstmp] [$uncles]  [$block_id] \n";			
+			# my @block_uncle = ( $block_id , $uncles );
+			# if (exists $total_blocks{$tstmp})
+			# {
+				# print "Multiple $tstmp \n";
+			# }
+			# else
+			# {
+				# print "Once $tstmp \n";
+				# $total_blocks{$tstmp} = [ @block_uncle ]; 
+			# }
+			# my $nb_uncles = 0;			
+			# if ( $uncles =~ /.*\((\d*?) Uncle.*?at.*/ )
+			# {
+				# $nb_uncles = $1;
+			# }
+			#print "[$tstmp]#[$block_id]#[$nb_uncles] \n";
+			processLogEntry("$tstmp#$block_id#$uncles");
+			
+			# print "[$tstmp] [$uncles]  [$block_id] \n";
+			#my ($timestamp) = /(^\d+-\d+-\d+_\d\d:\d\d:\d\d)/;
+			#my $t = Time::Piece->strptime($timestamp, $format);
+			#print if $t >= $start && $t <= $end;
+		}
+	}
+	
+	
 }
 
 close $fh;
