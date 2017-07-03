@@ -137,6 +137,9 @@ sub processLogEntry
   my $timeStamp = $words[0];
   my $blockID = $words[1];
   my $uncles = $words[2];
+
+  my $crtTime = localtime;
+  $crtTime = Time::Piece->strptime($crtTime,'%a %b %d %H:%M:%S %Y');
   
   #printf("time %s\n",$timeStamp);
  
@@ -144,10 +147,18 @@ sub processLogEntry
   my $HI = 0;
   getTimeIndexes($timeStamp,\$AI,\$HI);
 
-  if (!defined $_24HrsBlocks[$AI]{$HI}{$blockID})
+  $timeStamp=Time::Piece->strptime($timeStamp,'%Y-%m-%d_%H-%M-%S');
+  
+  my $crtDay = $crtTime->strftime("%d");
+  my $tsDay = $timeStamp->strftime("%d");
+  
+  if ($crtDay eq $tsDay)
   {
-    $_24HrsBlocks[$AI]{$HI}{$blockID}{'timeStamp'} = $timeStamp;
-    $_24HrsBlocks[$AI]{$HI}{$blockID}{'uncles'}= $uncles;
+	if (!defined $_24HrsBlocks[$AI]{$HI}{$blockID})
+	{
+		$_24HrsBlocks[$AI]{$HI}{$blockID}{'timeStamp'} = $timeStamp;
+		$_24HrsBlocks[$AI]{$HI}{$blockID}{'uncles'}= $uncles;
+	}
   }
 }
 
