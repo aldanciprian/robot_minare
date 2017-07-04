@@ -34,7 +34,7 @@ while (1)
 		# the last line written by was 40 sec ago.Its to late
 		# restart the control_order script
 		 print "kill control order becuase distance to the last time is $delta seconds \n";
-		 my $pid = `ps -ef | grep control_order.previous | grep -v grep | awk '{print \$2}'`;
+		 my $pid = `ps -ef | grep control_order.pl | grep -v grep | awk '{print \$2}'`;
 		 print "pid to kill is $pid \n";
 		 `kill -9 $pid`;
 	}

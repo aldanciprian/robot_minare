@@ -82,6 +82,21 @@ sub read_monitor_ether_log
 			processLogEntry("$tstmp#$block_id#$uncles");
 		}
 	}
+	@uncheck_blocks = `cat ./monitor_ether_loop_log.txt | grep "2017" | grep -v "Nanopool" | sort | uniq `;
+	foreach (@uncheck_blocks)
+	{
+		#get timestamp uncles and order id
+		chomp($_);
+		#print " line [$_] \n";
+		if ( $_ =~ /(.*?)#(.*?)#(.*)/ )
+		{
+			#[2017-06-29_09-43-51] [Uncles Reward: 3.125 Ether (1 Uncle at [46]Position 0)]  [3946512]
+			my $tstmp = trim($1);
+			my $uncles = trim($2);
+			my $block_id = trim($3);
+			processLogEntry("$tstmp#$block_id#$uncles");
+		}
+	}
 }
 
 
