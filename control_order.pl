@@ -51,19 +51,21 @@ my $specific_order; # the hash of the target order
 my $startDiffInt_l1 = 60; # seconds from the start of the timeframe
 my $endDiffInt_l1 = 80; #  seconds until the end of the timeframe
 my $startDiffInt_l2 = 80; # seconds from the start of the timeframe
-my $endDiffInt_l2 = 120; #  seconds until the end of the timeframe
-my $startDiffInt_l3 = 120; # seconds from the start of the timeframe
+my $endDiffInt_l2 = 125; #  seconds until the end of the timeframe
+my $startDiffInt_l3 = 126; # seconds from the start of the timeframe
 my $endDiffInt_l3 = 140; #  seconds until the end of the timeframe
-my $resetDiffInt = 130; # 130 seconds until the end of the timeframe to reset the speed
-
+my $resetDiffInt = 250; # seconds until the end of the timeframe to reset the speed
+my $big_speed_ctr = 0; # the counter for the big speed acceleration
+my $big_speed_inter = 1; # number of iterations for the big speed the big speed acceleration
 my $old_startCrtTF = 0; # the old crt TF 
 
 
 
-my $max_speed = 2.5;
+my $max_speed = 40;
 my $l1_speed = 0.2;
 my $l2_speed = 0.4;
 my $l3_speed = 0.8;
+my $req_speed = 0.1;
 my $min_speed = 0.1;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
@@ -101,7 +103,7 @@ for my $k (0..5)
 }
 
 #read the last 40 blocks from log
-read_monitor_ether_log();
+#read_monitor_ether_log();
 
 
 
@@ -119,142 +121,173 @@ while (1)
 	close $fh_wdg;
 	
 	
-	
-	count_blocks_tick();
-	getCrt();
-	print "timeframe crt: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'} - ";
-	print $fh "TimeStamp crt : $while_tstmp timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  - ";
-	foreach (keys (%{$crtBlocks{'blocks'}}))
+	$specific_order	= get_specific_order_hash();
+	if (defined $specific_order->{'id'} )	
 	{
-		print "$_ ";
-		print $fh "$_ ";
-	}
-	print "\n";
-	print $fh "\n";
-
-	#alina new
-	my $noOfPrevTimeFrames = 5;
-	getPrevious($noOfPrevTimeFrames);
-	for my $i (0..($noOfPrevTimeFrames-1))
-	{
-		print "timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'} - ";
-		print $fh "TimeStamp: $while_tstmp timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'} - ";
-		foreach (keys (%{$lastXBlocks[$i]{'blocks'}}))
-		{
-		  print "$_ ";
-		  print $fh "$_ ";	
-		}
+		#we found the target order 
 		print "\n";
-		print $fh "\n";
-	}
-	#alina end new
-
-	
-	
-	##alina timeDiff
-	my $crtTime =   Time::Piece->strptime($while_tstmp,'%Y-%m-%d_%H-%M-%S');
-	my $minute = 0;
-	{
-	  use integer;
-	  $minute = $crtTime->strftime("%M");
-	  #print "zeci de minute ".((($minute+0)/10)*10)."\n";
-	  $minute = (($minute+0)/10)*10;
-	}
-	my $startMinute = sprintf("%02s",$minute);
-	my $startTime = $crtTime->strftime("%Y-%m-%d_%H-$startMinute-00");
-	$startTime = Time::Piece->strptime($startTime,'%Y-%m-%d_%H-%M-%S');
-	
-	if ($old_startCrtTF != $startTime )
-	{
-		# a new TF begin
-		#force low speed and price decrease
-		$old_startCrtTF = $startTime;		
-		$currentHighSpeed = 0;
-		decrease_speed();
-	}
-
-	# print "crt time $crtTime $minute $startMinute \n";
-	# print "start time $startTime \n";
-	
-	my $endMinute = sprintf("%02s",($minute+9));
-	my $endTime = $crtTime->strftime("%Y-%m-%d_%H-$endMinute-59");
-	$endTime = Time::Piece->strptime($endTime,'%Y-%m-%d_%H-%M-%S');
-	# print "end time $endTime \n";				
-	my $startDiff = $crtTime - $startTime;
-	my $endDiff = $endTime - $crtTime;
-	print "start end diff $startDiff  [ $startDiffInt_l1 >  < $endDiffInt_l1 ] [ $startDiffInt_l2 >  < $endDiffInt_l2 ] [ $startDiffInt_l3 >  < $endDiffInt_l3 ] \n ";
-	
-	# if we are in high speed don't check any level intervals
-	# just do the reset near the end of the TF
-	if ( $currentHighSpeed == 1 )
-	{
-		print "mining with high speed \n";
-		if ( $endDiff < $resetDiffInt )
-		{
-			#the last 40 sec of the interval reset to 0.1
-			#decrease speed	  
-			print "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-			print $fh "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";				
-			$currentHighSpeed = 0 ;						
-			decrease_speed();
-		}
+		#print " yes target order \n";
 	}
 	else
 	{
-		# we don't mine with high speed
-		# we need to decide in case of different levels
-		if (($startDiff > $startDiffInt_l1 ) && ( $startDiff < $endDiffInt_l1))
-		{
-		  # we are in interval l1
-		  print "in interval l1 \n";
-		  if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
-		  {
-				print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-				print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-				$currentHighSpeed = 1;
-				#increase speed
-				increase_speed($l3_speed);
-		  }
-		}
-		else
-		{
-			if (($startDiff > $startDiffInt_l2 ) && ( $startDiff < $endDiffInt_l2))
-			{
-			  # we are in interval l2
-			  print "in interval l2 \n";
-			  if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
-			  {
-					print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-					print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-					$currentHighSpeed = 1;
-					#increase speed
-					increase_speed($l2_speed);
-			  }
-			}
-			else
-			{
-				if (($startDiff > $startDiffInt_l3 ) && ( $startDiff < $endDiffInt_l3))
-				{
-				  # we are in interval l3
-				  print "in interval l3 \n";
-				  if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
-				  {
-						print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-						print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
-						$currentHighSpeed = 1;
-						#increase speed
-						increase_speed($l1_speed);
-				  }
-				}
-				else
-				{
-					#we are outside of any decision interval
-					#just be sure we got to minimum
-					print "outside of all intervals - no mining ! \n";
-				}		
-			}		
-		}
-	}
+		#we didn't found the target order
+		#print " no target order \n";
+		sleep 20;
+		next;		
+	}	
+	
+	
+	
+	# # count_blocks_tick();
+	# # getCrt();
+	# # print "timeframe crt: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'} - ";
+	# # print $fh "TimeStamp crt : $while_tstmp timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  - ";
+	# # foreach (keys (%{$crtBlocks{'blocks'}}))
+	# # {
+		# # print "$_ ";
+		# # print $fh "$_ ";
+	# # }
+	# # print "\n";
+	# # print $fh "\n";
+
+	# # alina new
+	# # my $noOfPrevTimeFrames = 5;
+	# # getPrevious($noOfPrevTimeFrames);
+	# # for my $i (0..($noOfPrevTimeFrames-1))
+	# # {
+		# # print "timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'} - ";
+		# # print $fh "TimeStamp: $while_tstmp timeframe: $lastXBlocks[$i]{'timeFrame'} blocks:  $lastXBlocks[$i]{'noOfBlocks'} uncles: $lastXBlocks[$i]{'uncles'} - ";
+		# # foreach (keys (%{$lastXBlocks[$i]{'blocks'}}))
+		# # {
+		  # # print "$_ ";
+		  # # print $fh "$_ ";	
+		# # }
+		# # print "\n";
+		# # print $fh "\n";
+	# # }
+	# # alina end new
+
+	
+	
+	# ##alina timeDiff
+	# my $crtTime =   Time::Piece->strptime($while_tstmp,'%Y-%m-%d_%H-%M-%S');
+	# my $minute = 0;
+	# {
+	  # use integer;
+	  # $minute = $crtTime->strftime("%M");
+	  # #print "zeci de minute ".((($minute+0)/10)*10)."\n";
+	  # $minute = (($minute+0)/10)*10;
+	# }
+	# my $startMinute = sprintf("%02s",$minute);
+	# my $startTime = $crtTime->strftime("%Y-%m-%d_%H-$startMinute-00");
+	# $startTime = Time::Piece->strptime($startTime,'%Y-%m-%d_%H-%M-%S');
+	
+	# if ($old_startCrtTF != $startTime )
+	# {
+		# # a new TF begin
+		# #force low speed and price decrease
+		# $old_startCrtTF = $startTime;		
+		# $currentHighSpeed = 0;
+		# decrease_speed();
+	# }
+
+	# # print "crt time $crtTime $minute $startMinute \n";
+	# # print "start time $startTime \n";
+	
+	# my $endMinute = sprintf("%02s",($minute+9));
+	# my $endTime = $crtTime->strftime("%Y-%m-%d_%H-$endMinute-59");
+	# $endTime = Time::Piece->strptime($endTime,'%Y-%m-%d_%H-%M-%S');
+	# # print "end time $endTime \n";				
+	# my $startDiff = $crtTime - $startTime;
+	# my $endDiff = $endTime - $crtTime;
+	# print "start end diff $startDiff  [ $startDiffInt_l1 >  < $endDiffInt_l1 ] [ $startDiffInt_l2 >  < $endDiffInt_l2 ]  \n ";
+	
+	# # if we are in high speed don't check any level intervals
+	# # just do the reset near the end of the TF
+	# if ( $currentHighSpeed == 1 )
+	# {
+		# print "mining with high speed \n";
+		
+		# if ( $big_speed_ctr == 0 )
+		# {
+			# # switch to requested speed
+			# increase_speed($req_speed,\%$specific_order);
+		# }
+		# else
+		# {
+			# $big_speed_ctr--;
+		# }
+		
+		# if ( $endDiff < $resetDiffInt )
+		# {
+			# #the last 40 sec of the interval reset to 0.1
+			# #decrease speed	  
+			# print "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+			# print $fh "set speed to min 0.1 at $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";				
+			# $currentHighSpeed = 0 ;						
+			# decrease_speed();
+		# }
+	# }
+	# else
+	# {
+		# # we don't mine with high speed
+		# # we need to decide in case of different levels
+		# if (($startDiff > $startDiffInt_l1 ) && ( $startDiff < $endDiffInt_l1))
+		# {
+		  # # we are in interval l1
+		  # print "in interval l1 \n";
+		  # if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
+		  # {
+				# print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+				# print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+				# $currentHighSpeed = 1;
+				# #increase speed
+				# $req_speed = $l3_speed;
+				# $big_speed_ctr = $big_speed_inter;
+				# increase_speed($max_speed,\%$specific_order);
+		  # }
+		# }
+		# else
+		# {
+			# if (($startDiff > $startDiffInt_l2 ) && ( $startDiff < $endDiffInt_l2))
+			# {
+			  # # we are in interval l2
+			  # print "in interval l2 \n";
+			  # if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
+			  # {
+					# print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+					# print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+					# $currentHighSpeed = 1;
+					# #increase speed
+					# $req_speed = $l2_speed;
+					# $big_speed_ctr = $big_speed_inter;					
+					# increase_speed($max_speed,\%$specific_order);
+			  # }
+			# }
+			# else
+			# {
+				# # if (($startDiff > $startDiffInt_l3 ) && ( $startDiff < $endDiffInt_l3))
+				# # {
+				  # # we are in interval l3
+				  # # print "in interval l3 \n";
+				  # # if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
+				  # # {
+						# # print "Increasing speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+						# # print $fh "Increase speed ,starting  $crtBlocks{'noOfBlocks'} blocks at time $while_tstmp \n";
+						# # $currentHighSpeed = 1;
+						# # $req_speed = $l1_speed;
+						# # increase_speed($max_speed);
+				  # # }
+				# # }
+				# # else
+				# {
+					# #we are outside of any decision interval
+					# #just be sure we got to minimum
+					# print "outside of all intervals - no mining ! \n";
+				# }		
+			# }		
+		# }
+	# }
 	#end alina necompilat
 	
 	
@@ -271,31 +304,18 @@ while (1)
 	# }
 	#alina end new
 	
-	$specific_order	= get_specific_order_hash();
-	if (defined $specific_order->{'id'} )	
-	{
-		#we found the target order 
-		print "\n";
-		#print " yes target order \n";
-	}
-	else
-	{
-		#we didn't found the target order
-		#print " no target order \n";
-		sleep 20;
-		next;		
-	}
-	if ( $currentHighSpeed == 1 )
-	{
+
+	# if ( $currentHighSpeed == 1 )
+	# {
 		print "keep_price_to_min \n";
 		keep_price_to_min(\%$specific_order);	
-	}
-	else
-	{
-		print "just decrease_price \n\n";	
-		decrease_price(\%$specific_order);		
-		decrease_speed();
-	}
+	# }
+	# else
+	# {
+		# print "just decrease_price \n\n";	
+		# decrease_price(\%$specific_order);		
+		# decrease_speed();
+	# }
 
 	print "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} -  $specific_order->{'accepted_speed'}  - $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";
 	print $fh "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} -  $specific_order->{'accepted_speed'}  -  $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";		
@@ -398,19 +418,19 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		$target_price = $min_price + 0.0004;
+		$target_price = $min_price + 0.0002;
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
 			#decrease
 			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0008 )
 			{
-				print timestamp()." DOWN  ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
+				print timestamp()." DOWN   $local_specific_order->{'price'} $target_price $min_price\n";
 				#decrese speed
 				decrease_price(\%$specific_order);				
 			}
 			else
 			{
-				print timestamp()." Could go DOWN ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
+				print timestamp()." Could go DOWN  $local_specific_order->{'price'} $target_price $min_price\n";
 
 			}
 		}
@@ -421,7 +441,7 @@ sub keep_price_to_min {
 			{
 				my $increase_price = 0;
 				
-				if ($target_price - $local_specific_order->{'price'} > 0.0010 )
+				if ($target_price - $local_specific_order->{'price'} > 0.0008 )
 				{
 					#increase direct
 					$increase_price = $target_price;
@@ -432,7 +452,7 @@ sub keep_price_to_min {
 					$increase_price = $local_specific_order->{'price'} +  0.0001;
 				}
 
-				print timestamp()." UP  ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
+				print timestamp()." UP   $local_specific_order->{'price'} $target_price $min_price\n";
 				#print "to increase \n";
 				
 				print "increase price to $increase_price \n";
@@ -444,7 +464,7 @@ sub keep_price_to_min {
 			else
 			{
 				#constant
-				print timestamp()." CONST  ".($local_specific_order->{'price'} - $target_price)." $local_specific_order->{'price'} $target_price $min_price\n";
+				print timestamp()." CONST   $local_specific_order->{'price'} $target_price $min_price\n";
 				# if ($local_specific_order->{'workers'} == 0 )
 				# {
 					# my $increase_price = $local_specific_order->{'price'} +  0.0001;
@@ -701,9 +721,18 @@ sub decrease_speed
 sub increase_speed
 {
 	my $speed = shift;
+	my $local_specific_order = shift;
 	if ($target_order != 0 )
 	{
-	$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$speed");
+		# if ( $local_specific_order->{'accepted_speed'} != 0 )	
+		# {
+			# $decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$req_speed");		
+		# }
+		# else
+		{
+			$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.limit&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order&limit=$speed");		
+		}
+
 	}
 }
 

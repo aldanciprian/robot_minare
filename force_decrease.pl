@@ -35,7 +35,7 @@ my $apiid = $ENV{'NICEHASH_APIID'};
 my $apikey = $ENV{'NICEHASH_APIKEY'};
 #daggerhassimoto is 20 at nicehash
 my $algo=20;
-my $interval=1;  #seconds
+my $interval=10;  #seconds
 my $decline_price_int = 0; # we need 10 mins
 my $decline_price_int_limit = (600 / $interval) + 1; # we need 10 mins
 my $nr_bellow_limit = 3; # nr of orders bellow mine
