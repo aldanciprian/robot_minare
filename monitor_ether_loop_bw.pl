@@ -18,11 +18,11 @@ sub loop;
 
 open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
 
-for ($page_index = 0; $page_index <=500 ; $page_index++)
-{
-	read_parse($page_index);
+# for ($page_index = 0; $page_index <=500 ; $page_index++)
+# {
+	# read_parse($page_index);
 	# sleep 1;
-}
+# }
 
 loop();
 

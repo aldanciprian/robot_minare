@@ -91,6 +91,12 @@ if ( defined $decoded_json->{'data'}->{'workers'}[0] )
 	print "$decoded_json->{'data'}->{'workers'}[0]->{'lastShare'} ";
 }
 print " \n";
+
+
+$decoded_json = get_json("https://api.nanopool.org/v1/eth/network/lastblocknumber");
+print timestamp()." ";
+print "$decoded_json->{'data'} \n";;
+
 # $decoded_json = get_json("https://api.nanopool.org/v1/eth/network/lastblocknumber");
 # $decoded_json = get_json("https://api.nanopool.org/v1/eth/shareratehistory/$eth_add");
 # print Dumper $decoded_json;
