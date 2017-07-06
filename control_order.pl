@@ -58,6 +58,7 @@ my $resetDiffInt = 250; # seconds until the end of the timeframe to reset the sp
 my $big_speed_ctr = 0; # the counter for the big speed acceleration
 my $big_speed_inter = 1; # number of iterations for the big speed the big speed acceleration
 my $old_startCrtTF = 0; # the old crt TF 
+my $startCycle =  30; # seconds from the last of the cycle start
 
 
 
@@ -119,6 +120,46 @@ while (1)
 	open(my $fh_wdg, '>>', $filename_wdg) or die "Could not open file '$filename_wdg' $!";
 	print $fh_wdg "$while_tstmp\n";
 	close $fh_wdg;
+
+	# last start
+	my $filename_start = 'start_control_order.txt';	
+	
+	#get current time
+	my $crtTime =   Time::Piece->strptime($while_tstmp,'%Y-%m-%d_%H-%M-%S');
+	
+	#open for read last line
+	open(my $fh_start, '<', $filename_start) or die "Could not open file '$filename_start' $!";
+	my $last_line;
+	$last_line = $_,while (<$fh_start>);
+	close $fh_start;
+	chomp($last_line);
+	
+	
+	my $startTime = Time::Piece->strptime($last_line,'%Y-%m-%d_%H-%M-%S');	
+	
+	print "$last_line and $while_tstmp \n";
+	
+	my $diffTime = $crtTime - $startTime;
+	print "Diff is $diffTime \n";
+	
+	
+	if ( $diffTime >  $startCycle )
+	{
+		print "Mining \n";	
+		# open for append last line
+		open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
+		print $fh_start "$while_tstmp\n";
+		close $fh_start;
+	}
+	else
+	{
+		if ( $diffTime >  $startCycle )
+		{
+		
+		}
+		print "No mining \n";
+	}
+	
 	
 	
 	$specific_order	= get_specific_order_hash();
