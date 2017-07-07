@@ -58,7 +58,17 @@ my $resetDiffInt = 250; # seconds until the end of the timeframe to reset the sp
 my $big_speed_ctr = 0; # the counter for the big speed acceleration
 my $big_speed_inter = 1; # number of iterations for the big speed the big speed acceleration
 my $old_startCrtTF = 0; # the old crt TF 
-my $startCycle =  30; # seconds from the last of the cycle start
+my $startCycleRef =  700; # seconds from the last of the cycle start
+my $maxStartCycle = 860; # maximum number of seconds to repeat the interval
+my $startCycle =  $startCycleRef; # seconds from the last of the cycle start
+my $jitterStartCycle = 40; # seconds from the end where we verify is order is stopped
+my $increaseStartCycle = 20; # seconds to increase start cycle time in case is not to 0
+my $deltaCycleRef =  120; # seconds from the last of the cycle start
+my $maxDeltaCycle = 300; # max number of seconds to wait for accepted_speed
+my $deltaCycle =  $deltaCycleRef; # seconds from the last of the cycle start
+my $jitterDeltaCycle =  20; # seconds from the last of the cycle start
+my $increaseDeltaCycle =  20; # seconds from the last of the cycle start
+
 
 
 
@@ -66,7 +76,7 @@ my $max_speed = 40;
 my $l1_speed = 0.2;
 my $l2_speed = 0.4;
 my $l3_speed = 0.8;
-my $req_speed = 0.1;
+my $req_speed = 0.15;
 my $min_speed = 0.1;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
@@ -121,6 +131,23 @@ while (1)
 	print $fh_wdg "$while_tstmp\n";
 	close $fh_wdg;
 
+	$specific_order	= get_specific_order_hash();
+	if (defined $specific_order->{'id'} )	
+	{
+		#we found the target order 
+		print "\n";
+		#print " yes target order \n";
+	}
+	else
+	{
+		#we didn't found the target order
+		#print " no target order \n";
+		sleep 10;
+		next;		
+	}	
+		
+	
+	
 	# last start
 	my $filename_start = 'start_control_order.txt';	
 	
@@ -137,46 +164,86 @@ while (1)
 	
 	my $startTime = Time::Piece->strptime($last_line,'%Y-%m-%d_%H-%M-%S');	
 	
-	print "$last_line and $while_tstmp \n";
+	print "$last_line and $while_tstmp - diff";
 	
 	my $diffTime = $crtTime - $startTime;
-	print "Diff is $diffTime \n";
+	print " is $diffTime \n";
 	
-	
+
 	if ( $diffTime >  $startCycle )
 	{
-		print "Mining \n";	
+		print "Start Mining \n";	
 		# open for append last line
+		$currentHighSpeed = 1;
+		$startCycle =$startCycleRef;
 		open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
 		print $fh_start "$while_tstmp\n";
 		close $fh_start;
 	}
 	else
 	{
-		if ( $diffTime >  $startCycle )
+		if ( $diffTime < $deltaCycle )		
 		{
-		
+
+			# it should be in mining here
+			$currentHighSpeed = 1;
+			print "still mining $diffTime < $deltaCycle \n";
+
+			if ( $diffTime > ($deltaCycle - $jitterDeltaCycle) )		
+			{
+				#check if it has speed
+				if ( $specific_order->{'accepted_speed'} == 0 )
+				{
+					print "Still didn't received speed \n";
+					if ( $deltaCycle > $maxDeltaCycle )
+					{
+						$deltaCycle = $deltaCycleRef;
+					}
+					else
+					{
+						$deltaCycle = $deltaCycle + $increaseDeltaCycle;					
+					}
+				}
+				else
+				{
+					print "It received speed \n";
+					$deltaCycle = $deltaCycleRef;
+				}			
+			}
+			else
+			{
+				print "before jitter \n";
+			}
+			
+
 		}
-		print "No mining \n";
+		else
+		{
+			# stop mining
+			$currentHighSpeed = 0;
+			print "stop mining \n";
+			if ( $diffTime > ($startCycle - $jitterStartCycle) )
+			{
+				if ( $specific_order->{'accepted_speed'} != 0 )
+				{
+					print "still not stopped \n";
+					if ( $startCycle > $maxStartCycle )
+					{
+						$startCycle = $startCycleRef;
+					}
+					else
+					{
+						$startCycle = $startCycle + $increaseStartCycle;					
+					}
+				}
+			}
+		}
+
 	}
 	
 	
 	
-	$specific_order	= get_specific_order_hash();
-	if (defined $specific_order->{'id'} )	
-	{
-		#we found the target order 
-		print "\n";
-		#print " yes target order \n";
-	}
-	else
-	{
-		#we didn't found the target order
-		#print " no target order \n";
-		sleep 20;
-		next;		
-	}	
-	
+
 	
 	
 	# # count_blocks_tick();
@@ -346,17 +413,18 @@ while (1)
 	#alina end new
 	
 
-	# if ( $currentHighSpeed == 1 )
-	# {
+	 if ( $currentHighSpeed == 1 )
+	 {
 		print "keep_price_to_min \n";
 		keep_price_to_min(\%$specific_order);	
-	# }
-	# else
-	# {
-		# print "just decrease_price \n\n";	
-		# decrease_price(\%$specific_order);		
-		# decrease_speed();
-	# }
+		increase_speed($req_speed,\%$specific_order);		
+	 }
+	 else
+	 {
+		print "just decrease_price \n\n";	
+		decrease_price(\%$specific_order);		
+		decrease_speed();
+	}
 
 	print "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} -  $specific_order->{'accepted_speed'}  - $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";
 	print $fh "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} -  $specific_order->{'accepted_speed'}  -  $specific_order->{'limit_speed'} $specific_order->{'workers'}\n";		
@@ -459,11 +527,11 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		$target_price = $min_price + 0.0005;
+		$target_price = $min_price + 0.0003;
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
 			#decrease
-			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0007 )
+			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0009 )
 			{
 				print timestamp()." DOWN   $local_specific_order->{'price'} $target_price $min_price\n";
 				#decrese speed
@@ -482,7 +550,7 @@ sub keep_price_to_min {
 			{
 				my $increase_price = 0;
 				
-				if ($target_price - $local_specific_order->{'price'} > 0.0008 )
+				if ($target_price - $local_specific_order->{'price'} > 0.0004 )
 				{
 					#increase direct
 					$increase_price = $target_price;
@@ -734,7 +802,7 @@ sub decrease_price
 	if ( $target_order != 0 )
 	{
 		# print "local_specific_order accepted_speed is $local_specific_order->{'accepted_speed'} \n";
-		if ( $local_specific_order->{'accepted_speed'} != 0 )
+		if ( ($local_specific_order->{'accepted_speed'} != 0) || ( $local_specific_order->{'workers'} != 0 ) )
 		{
 			$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order");
 			print Dumper $decoded_json;
