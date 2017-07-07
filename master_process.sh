@@ -79,7 +79,7 @@ do
 			# pid=$(ps -ef | grep  monitor_ether.pl | grep -v grep |  awk '{print $2}')
 			# kill -9 $pid
 			# sleep 3s
-			 pid=$(ps -ef | grep  control_order.pl | grep -v grep |  awk '{print $2}')
+			 pid=$(ps -ef | grep  control_order.pl | grep -v grep | grep -v | manange |  awk '{print $2}')
 			 kill -9 $pid
 			 sleep 30s
 		else
