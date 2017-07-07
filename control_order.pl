@@ -59,7 +59,7 @@ my $big_speed_ctr = 0; # the counter for the big speed acceleration
 my $big_speed_inter = 1; # number of iterations for the big speed the big speed acceleration
 my $old_startCrtTF = 0; # the old crt TF 
 my $startCycleRef =  1020; # seconds from the last of the cycle start
-my $maxStartCycle = 1160; # maximum number of seconds to repeat the interval
+my $maxStartCycle = 3160; # maximum number of seconds to repeat the interval
 my $startCycle =  $startCycleRef; # seconds from the last of the cycle start
 my $jitterStartCycle = 40; # seconds from the end where we verify is order is stopped
 my $increaseStartCycle = 20; # seconds to increase start cycle time in case is not to 0
@@ -76,7 +76,7 @@ my $max_speed = 40;
 my $l1_speed = 0.2;
 my $l2_speed = 0.4;
 my $l3_speed = 0.8;
-my $req_speed = 0.17;
+my $req_speed = 0.16;
 my $min_speed = 0.1;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
