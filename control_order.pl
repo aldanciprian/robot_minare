@@ -531,7 +531,7 @@ sub keep_price_to_min {
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
 			#decrease
-			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0009 )
+			if ( ($local_specific_order->{'price'} - $target_price ) > 0.0007 )
 			{
 				print timestamp()." DOWN   $local_specific_order->{'price'} $target_price $min_price\n";
 				#decrese speed
