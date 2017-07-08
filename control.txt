@@ -1,2 +1,2 @@
-startup=off
+startup=on
 location=office
