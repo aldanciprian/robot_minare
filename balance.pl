@@ -52,6 +52,10 @@ else
 	$target_order = 0;
 }
 
+my $filename = 'balance_log.txt';
+open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
+
+
 while (1)
 {
 
@@ -105,14 +109,24 @@ while (1)
 		# print "$delta_btc BTC\n";
 	}	
 
-	$global_delta_eth = $current_eth_balance - ($current_btc_balance * 10) ;
-	$global_delta_btc = $current_btc_balance - ($current_eth_balance / 10 );
+	my $multiplication = $current_btc_balance * 10;
+	$global_delta_eth = $current_eth_balance - $multiplication ;
+	my $division =  ($current_eth_balance / 10 );
+	$global_delta_btc = ($current_btc_balance - $division) * 10;
+	# print "multi $multiplication divi $division \n";
 	print timestamp().": $current_eth_balance ; $delta_eth ; $round_delta_eth ; [$global_delta_eth] ETH -> " ;
-	print "$current_btc_balance ; $delta_btc ; $round_delta_btc ; [$global_delta_btc] BTC \n";
+	print "$current_btc_balance ; $delta_btc ; $round_delta_btc ; [$global_delta_btc / 10] BTC \n";
+	
+
+	print $fh timestamp().": $current_eth_balance ; $delta_eth ; $round_delta_eth ; [$global_delta_eth] ETH -> " ;
+	print $fh "$current_btc_balance ; $delta_btc ; $round_delta_btc ; [$global_delta_btc / 10] BTC \n";
+	
 	
 	sleep $interval;
 }
 
+close $fh;	
+	
 
 
 #gets url returns result object in json decoded  
