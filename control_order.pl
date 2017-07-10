@@ -58,18 +58,19 @@ my $resetDiffInt = 250; # seconds until the end of the timeframe to reset the sp
 my $big_speed_ctr = 0; # the counter for the big speed acceleration
 my $big_speed_inter = 1; # number of iterations for the big speed the big speed acceleration
 my $old_startCrtTF = 0; # the old crt TF 
-my $startCycleRef =  660; # seconds from the last of the cycle start
+my $startCycleRef =  1300; # seconds from the last of the cycle start
 my $maxStartCycle = 5160; # maximum number of seconds to repeat the interval
 my $startCycle =  $startCycleRef; # seconds from the last of the cycle start
 my $jitterStartCycle = 40; # seconds from the end where we verify is order is stopped
 my $increaseStartCycle = 20; # seconds to increase start cycle time in case is not to 0
-my $deltaCycleRef =  120; # seconds from the last of the cycle start
+my $deltaCycleRef =  110; # seconds from the last of the cycle start
 my $maxDeltaCycle = 300; # max number of seconds to wait for accepted_speed
 my $deltaCycle =  $deltaCycleRef; # seconds from the last of the cycle start
-my $jitterDeltaCycle =  20; # seconds from the last of the cycle start
-my $increaseDeltaCycle =  20; # seconds from the last of the cycle start
+my $jitterDeltaCycle =  30; # seconds from the last of the cycle start
+my $increaseDeltaCycle =  15; # seconds from the last of the cycle start
 
-
+my $fh_decrease;
+my $decreaseFilename = "control_order_decrease_success.txt";
 
 
 my $max_speed = 40;
@@ -169,6 +170,26 @@ while (1)
 	my $diffTime = $crtTime - $startTime;
 	print " is $diffTime \n";
 	
+	
+	#read when was the last decrease_success
+
+
+	my $last_line_decrease ;
+	open(my $fh_decrease, '<', $decreaseFilename) or die "Could not open file '$decreaseFilename' $!";
+	$last_line_decrease = $_,while (<$fh_decrease>);
+	close $fh_decrease;
+	chomp($last_line_decrease);
+	my $decreaseTime = Time::Piece->strptime($last_line_decrease,'%Y-%m-%d_%H-%M-%S');			
+			
+	my $decrease_delta = $crtTime - $decreaseTime;
+	
+	if ( ( $decrease_delta < 20 ) && ( $diffTime > ( $startCycle - 610 ) )  )
+	{
+		# the last success decrease was less then 10 min ago but near the start window
+		# don't try to start because it will not be able to decrease very fast
+		# delay with 20 sec
+		$startCycle = $startCycle + 20;
+	}
 
 	if ( $diffTime >  $startCycle )
 	{
@@ -422,7 +443,19 @@ while (1)
 	 else
 	 {
 		print "just decrease_price \n\n";	
-		decrease_price(\%$specific_order);		
+
+		#if there are more then 10 minutes until the begining of a new mining then force 
+		# a decrease so we don't be caught by the minimum price
+		if (  $diffTime < ($startCycle - 600 ) )
+		{
+			#force a decrease time
+			decrease_price(\%$specific_order,1);							
+		}
+		else
+		{
+			decrease_price(\%$specific_order,0);				
+		}
+
 		decrease_speed();
 	}
 
@@ -527,7 +560,7 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		$target_price = $min_price + 0.0003;
+		$target_price = $min_price + 0.0002;
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
 			#decrease
@@ -535,7 +568,7 @@ sub keep_price_to_min {
 			{
 				print timestamp()." DOWN   $local_specific_order->{'price'} $target_price $min_price\n";
 				#decrese speed
-				decrease_price(\%$specific_order);				
+				decrease_price(\%$specific_order,0);				
 			}
 			else
 			{
@@ -799,22 +832,55 @@ sub getCrt{
 sub decrease_price
 {
 	my $local_specific_order = shift;	
+	my $force = shift;		
 	if ( $target_order != 0 )
 	{
-		# print "local_specific_order accepted_speed is $local_specific_order->{'accepted_speed'} \n";
-		if ( ($local_specific_order->{'accepted_speed'} != 0) || ( $local_specific_order->{'workers'} != 0 ) )
+		if ( $force == 1 )
 		{
+			# a force decrease is requested
 			$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order");
 			print Dumper $decoded_json;
 			if ( exists $decoded_json->{'result'}->{'success'} )
 			{
 				print "decrease success \n";
 				$decline_price_int = $decline_price_int_limit;
+				# mark the momemt de decrease was a success
+				open(my $fh_decrease, '>', $decreaseFilename) or die "Could not open file '$decreaseFilename' $!";
+				print $fh_decrease timestamp();
+				close $fh_decrease;
+
 			}
 			else
 			{
 				print  "decrease error \n";
 			}
+			
+		}
+		else
+		{
+			# normal decrease
+			# print "local_specific_order accepted_speed is $local_specific_order->{'accepted_speed'} \n";
+			if ( ($local_specific_order->{'accepted_speed'} != 0) || ( $local_specific_order->{'workers'} != 0 ) )
+			{
+				$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order");
+				print Dumper $decoded_json;
+				if ( exists $decoded_json->{'result'}->{'success'} )
+				{
+					print "decrease success \n";
+					$decline_price_int = $decline_price_int_limit;
+					#mark the momemt de decrease was a success
+					open(my $fh_decrease, '>', $decreaseFilename) or die "Could not open file '$decreaseFilename' $!";
+					print $fh_decrease timestamp();
+					close $fh_decrease;
+
+				}
+				else
+				{
+					print  "decrease error \n";
+				}
+			}
+			
+			
 		}
 	}	
 }
