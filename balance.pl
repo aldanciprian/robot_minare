@@ -84,25 +84,25 @@ while (1)
 	
 	if ( $previous_eth_balance != $current_eth_balance )
 	{
-		# $delta_eth = ($current_eth_balance - $previous_eth_balance);
-		# if ( $previous_delta_eth != $delta_eth )
-		# {
-			# $round_delta_eth = $delta_eth - $previous_delta_eth;
-			# $previous_delta_eth = $delta_eth;
-		# }
+		$delta_eth = ($current_eth_balance - $previous_eth_balance);
+		if ( $previous_delta_eth != $delta_eth )
+		{
+			$round_delta_eth = $delta_eth - $previous_delta_eth;
+			$previous_delta_eth = $delta_eth;
+		}
 		$previous_eth_balance = $current_eth_balance;
 		# print "$delta_eth ETH \n";
 	}
 
 	if ( $previous_btc_balance != $current_btc_balance )
 	{
-		# $delta_btc = ($current_btc_balance - $previous_btc_balance);
+		$delta_btc = ($current_btc_balance - $previous_btc_balance);
 		
-		# if ( $previous_delta_btc != $delta_btc )
-		# {
-			# $round_delta_btc = $delta_btc - $previous_delta_btc;
-			# $previous_delta_btc = $delta_btc;
-		# }
+		if ( $previous_delta_btc != $delta_btc )
+		{
+			$round_delta_btc = $delta_btc - $previous_delta_btc;
+			$previous_delta_btc = $delta_btc;
+		}
 
 		
 		$previous_btc_balance = $current_btc_balance;
@@ -112,14 +112,14 @@ while (1)
 	my $multiplication = $current_btc_balance * 10;
 	$global_delta_eth = $current_eth_balance - $multiplication ;
 	my $division =  ($current_eth_balance / 10 );
-	$global_delta_btc = ($current_btc_balance - $division) * 10;
+	$global_delta_btc = ($current_btc_balance - $division);
 	# print "multi $multiplication divi $division \n";
-	print timestamp().": $current_eth_balance ; $delta_eth ; $round_delta_eth ; [$global_delta_eth] ETH -> " ;
-	print "$current_btc_balance ; $delta_btc ; $round_delta_btc ; [$global_delta_btc / 10] BTC \n";
+	print timestamp().": ".sprintf("%0.15f",$current_eth_balance)." ; ".sprintf("%0.15f",$delta_eth)." ; ".sprintf("%0.15f",$round_delta_eth)." ; [".sprintf("%0.15f",$global_delta_eth)."]E->";
+	print " ".sprintf("%0.15f",$current_btc_balance)." ; ".sprintf("%0.15f",$delta_btc)." ; ".sprintf("%0.15f",$round_delta_btc)." ; [".sprintf("%0.15f",$global_delta_btc)." ]B\n";
 	
 
-	print $fh timestamp().": $current_eth_balance ; $delta_eth ; $round_delta_eth ; [$global_delta_eth] ETH -> " ;
-	print $fh "$current_btc_balance ; $delta_btc ; $round_delta_btc ; [$global_delta_btc / 10] BTC \n";
+	print $fh timestamp().": ".sprintf("%0.15f",$current_eth_balance)." ; ".sprintf("%0.15f",$delta_eth)." ; ".sprintf("%0.15f",$round_delta_eth)." ; [".sprintf("%0.15f",$global_delta_eth)."] ETH -> " ;
+	print $fh " ".sprintf("%0.15f",$current_btc_balance)." ; ".sprintf("%0.15f",$delta_btc)." ; ".sprintf("%0.15f",$round_delta_btc)." ; [".sprintf("%0.15f",$global_delta_btc)." ] BTC \n";
 	
 	
 	sleep $interval;
@@ -179,7 +179,7 @@ sub get_json_curl
 sub timestamp {
   my $t = localtime;
   return sprintf( "%04d-%02d-%02d_%02d-%02d-%02d",
-                  $t->year + 1900, $t->mon + 1, $t->mday,
+                  $t->year, $t->mon, $t->mday,
                   $t->hour, $t->min, $t->sec );
 }
 
