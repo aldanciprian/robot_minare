@@ -2,7 +2,7 @@
 
 while [ 1 ]
 do
-	PID_OUT=`ps -ef | grep control_order_mixt.pl | grep -v grep`
+	PID_OUT=`ps -ef | grep control_order_spikes.pl | grep -v grep`
 	# echo ${PID_OUT}
 	if [ $? -eq 0 ]
 	then

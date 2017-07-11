@@ -62,13 +62,13 @@ my $old_startCrtTF = 0; # the old crt TF
 my $startCycleRef =  900; # seconds from the last of the cycle start
 my $maxStartCycle = 5160; # maximum number of seconds to repeat the interval
 my $startCycle =  $startCycleRef; # seconds from the last of the cycle start
-my $jitterStartCycle = 40; # seconds from the end where we verify is order is stopped
+my $jitterStartCycle = 10; # seconds from the end where we verify is order is stopped
 my $increaseStartCycle = 20; # seconds to increase start cycle time in case is not to 0
-my $deltaCycleRef =  30; # seconds from the last of the cycle start
-my $maxDeltaCycle = 300; # max number of seconds to wait for accepted_speed
+my $deltaCycleRef =  120; # seconds from the last of the cycle start
+my $maxDeltaCycle = 200; # max number of seconds to wait for accepted_speed
 my $deltaCycle =  $deltaCycleRef; # seconds from the last of the cycle start
-my $jitterDeltaCycle =  30; # seconds from the last of the cycle start
-my $increaseDeltaCycle =  15; # seconds from the last of the cycle start
+my $jitterDeltaCycle =  50; # seconds from the last of the cycle start
+my $increaseDeltaCycle =  30; # seconds from the last of the cycle start
 my $tf_valid = 0; # if 1 it means we can mine from the point of view of the TF
 my $can_decrease = 0; # says if we are able to decrease instant or not
 my $crtMinPrice = 0; # the current MinPrice
@@ -244,32 +244,95 @@ while (1)
 			
 	my $decrease_delta = $crtTime - $decreaseTime;
 
-	print "last decrease success was $decrease_delta ago \n"; 
-	if ( $decrease_delta > 600 )
+	print "last decrease success was $decrease_delta ago \n"; 	
+	
+	if ( ( $diffTime < $deltaCycle ) && ( $currentHighSpeed == 1 )	 )
 	{
-		# the last success decrease was more then 10 minutes
-		# we can mine if the other conditions are good
-		$can_decrease = 1;
-		#mine only if the current speed is 0
-		if ( ( $specific_order->{'accepted_speed'} == 0 ) && ($specific_order->{'workers'} == 0) )
-		{
-			print "Start Mining \n";	
-			$tf_valid = 0;
-			# open for append last line
-			$currentHighSpeed = 1;
-			# $startCycle =$startCycleRef;
-			open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
-			print $fh_start "$while_tstmp\n";
-			close $fh_start;		
 
+		# it should be in mining here
+		$currentHighSpeed = 1;
+		print "still mining $diffTime < $deltaCycle \n";
+		#if it didn't received speed leave it on a little bit longger
+
+		if ( $diffTime > ($deltaCycle - $jitterDeltaCycle) )		
+		{
+			#check if it has speed
+			if ( $specific_order->{'accepted_speed'} == 0 )
+			{
+				print "Still didn't received speed \n";
+				if ( $deltaCycle > $maxDeltaCycle )
+				{
+					$deltaCycle = $deltaCycleRef;
+				}
+				else
+				{
+					$deltaCycle = $deltaCycle + $increaseDeltaCycle;					
+				}
+			}
+			else
+			{
+				print "It received speed \n";
+				$deltaCycle = $deltaCycleRef;
+			}			
 		}
-		
-		
+		else
+		{
+			print "before jitter \n";
+		}
 	}
 	else
 	{
-		$can_decrease = 0;	
+		# stop mining
+		$currentHighSpeed = 0;
+		print "stop mining \n";
+		# if ( $diffTime > ($startCycle - $jitterStartCycle) )
+		# {
+			# if ( $specific_order->{'accepted_speed'} != 0 )
+			# {
+				# print "still not stopped \n";
+				# if ( $startCycle > $maxStartCycle )
+				# {
+					# $startCycle = $startCycleRef;
+				# }
+				# else
+				# {
+					# $startCycle = $startCycle + $increaseStartCycle;					
+				# }
+			# }
+		# }
+	}	
+	
+	
+	
+	if ( $diffTime > 1000 )
+	{
+		# try to mine every 20 min
+		if ( $decrease_delta > 600 )
+		{
+			# the last success decrease was more then 10 minutes
+			# we can mine if the other conditions are good
+			$can_decrease = 1;
+			#mine only if the current speed is 0
+			if ( ( $specific_order->{'accepted_speed'} == 0 ) && ($specific_order->{'workers'} == 0) )
+			{
+				print "Start Mining \n";	
+				$tf_valid = 0;
+				# open for append last line
+				$currentHighSpeed = 1;
+				# $startCycle =$startCycleRef;
+				open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
+				print $fh_start "$while_tstmp\n";
+				close $fh_start;		
+			}
+		}
+		else
+		{
+			$can_decrease = 0;	
+		}
+		
 	}
+	
+
 	
 	
 	# my $distance_decrease_to_end = 0;
@@ -311,61 +374,7 @@ while (1)
 	# }
 	# else
 	# {
-		if ( ( $diffTime < $deltaCycle ) && ( $currentHighSpeed == 1 )	 )
-		{
 
-			# it should be in mining here
-			$currentHighSpeed = 1;
-			print "still mining $diffTime < $deltaCycle \n";
-			#if it didn't received speed leave it on a little bit longger
-
-			# if ( $diffTime > ($deltaCycle - $jitterDeltaCycle) )		
-			# {
-				#check if it has speed
-			if ( $specific_order->{'accepted_speed'} == 0 )
-			{
-				print "Still didn't received speed \n";
-				if ( $deltaCycle > $maxDeltaCycle )
-				{
-					$deltaCycle = $deltaCycleRef;
-				}
-				else
-				{
-					$deltaCycle = $deltaCycle + $increaseDeltaCycle;					
-				}
-			}
-			else
-			{
-				print "It received speed \n";
-				$deltaCycle = $deltaCycleRef;
-			}			
-			# }
-			# else
-			# {
-				# print "before jitter \n";
-			# }
-		}
-		else
-		{
-			# stop mining
-			$currentHighSpeed = 0;
-			print "stop mining \n";
-			# if ( $diffTime > ($startCycle - $jitterStartCycle) )
-			# {
-				# if ( $specific_order->{'accepted_speed'} != 0 )
-				# {
-					# print "still not stopped \n";
-					# if ( $startCycle > $maxStartCycle )
-					# {
-						# $startCycle = $startCycleRef;
-					# }
-					# else
-					# {
-						# $startCycle = $startCycle + $increaseStartCycle;					
-					# }
-				# }
-			# }
-		}
 
 	# }
 	
@@ -642,7 +651,7 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		$target_price = $min_price + 0.0001;
+		$target_price = $min_price + 0.0002;
 		# $target_price = $min_price;
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
@@ -943,7 +952,7 @@ sub decrease_price
 		{
 			# normal decrease
 			# print "local_specific_order accepted_speed is $local_specific_order->{'accepted_speed'} \n";
-			if ( ($local_specific_order->{'accepted_speed'} != 0) || ( $local_specific_order->{'workers'} != 0 ) || ( $local_specific_order->{'price'}  > ($crtMinPrice - 0.0000 )  ) )
+			if ( ($local_specific_order->{'accepted_speed'} != 0) || ( $local_specific_order->{'workers'} != 0 ) || ( $local_specific_order->{'price'} > ($crtMinPrice - 0.0004 ) )  )
 			{
 				$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order");
 				print Dumper $decoded_json;
