@@ -247,21 +247,76 @@ while (1)
 	print "last decrease success was $decrease_delta ago \n"; 
 	if ( $decrease_delta > 600 )
 	{
-		# the last success decrease was more then 10 minutes
-		# we can mine if the other conditions are good
-		$can_decrease = 1;
-		#mine only if the current speed is 0
-		if ( ( $specific_order->{'accepted_speed'} == 0 ) && ($specific_order->{'workers'} == 0) )
+		
+		count_blocks_tick();
+		getCrt();
+		print "timeframe crt: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'} - ";
+		print $fh "TimeStamp crt : $while_tstmp timeframe: $crtBlocks{'timeFrame'} blocks:  $crtBlocks{'noOfBlocks'} uncles: $crtBlocks{'uncles'}  - ";
+		foreach (keys (%{$crtBlocks{'blocks'}}))
 		{
-			print "Start Mining \n";	
-			$tf_valid = 0;
-			# open for append last line
-			$currentHighSpeed = 1;
-			# $startCycle =$startCycleRef;
-			open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
-			print $fh_start "$while_tstmp\n";
-			close $fh_start;		
+			print "$_ ";
+			print $fh "$_ ";
 		}
+		print "\n";
+		print $fh "\n";		
+	
+		my $minute = 0;
+		{
+			use integer;
+			$minute = $crtTime->strftime("%M");
+			#print "zeci de minute ".((($minute+0)/10)*10)."\n";
+			$minute = (($minute+0)/10)*10;
+		}
+		my $startMinute = sprintf("%02s",$minute);
+		my $startTime = $crtTime->strftime("%Y-%m-%d_%H-$startMinute-00");
+		$startTime = Time::Piece->strptime($startTime,'%Y-%m-%d_%H-%M-%S');
+	
+		my $startDiff = $crtTime - $startTime;
+		print "startDiff $startDiff $startDiffInt_l1  \n ";
+	
+	
+		if (($startDiff < $startDiffInt_l1 ))
+		{
+			# we are in interval l1
+			print "in interval l1 \n";
+			if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
+			{
+				# mine only if the current speed is 0
+				if ( ( $specific_order->{'accepted_speed'} == 0 ) && ($specific_order->{'workers'} == 0) )
+				{
+					print "Start Mining \n";	
+					$tf_valid = 0;
+					# open for append last line
+					$currentHighSpeed = 1;
+					# $startCycle =$startCycleRef;
+					open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
+					print $fh_start "$while_tstmp\n";
+					close $fh_start;		
+				}			
+			}
+			else
+			{
+				print "Number of blocks is not higher or equal with $blocks_threshold \n";
+			}
+		}
+		else
+		{
+			print "Not at the begining of the TF \n";
+		}
+		
+		
+		# # mine only if the current speed is 0
+		# if ( ( $specific_order->{'accepted_speed'} == 0 ) && ($specific_order->{'workers'} == 0) )
+		# {
+			# print "Start Mining \n";	
+			# $tf_valid = 0;
+			# # open for append last line
+			# $currentHighSpeed = 1;
+			# # $startCycle =$startCycleRef;
+			# open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
+			# print $fh_start "$while_tstmp\n";
+			# close $fh_start;		
+		# }
 	}
 	else
 	{
@@ -639,8 +694,8 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		# $target_price = $min_price + 0.0001;
-		$target_price = $min_price - 0.0002;		
+		$target_price = $min_price + 0.0002;
+		# $target_price = $min_price - 0.0001;		
 		# $target_price = $min_price;
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
