@@ -64,7 +64,7 @@ my $maxStartCycle = 5160; # maximum number of seconds to repeat the interval
 my $startCycle =  $startCycleRef; # seconds from the last of the cycle start
 my $jitterStartCycle = 40; # seconds from the end where we verify is order is stopped
 my $increaseStartCycle = 20; # seconds to increase start cycle time in case is not to 0
-my $deltaCycleRef =  30; # seconds from the last of the cycle start
+my $deltaCycleRef =  50; # seconds from the last of the cycle start
 my $maxDeltaCycle = 300; # max number of seconds to wait for accepted_speed
 my $deltaCycle =  $deltaCycleRef; # seconds from the last of the cycle start
 my $jitterDeltaCycle =  30; # seconds from the last of the cycle start
@@ -261,10 +261,7 @@ while (1)
 			open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
 			print $fh_start "$while_tstmp\n";
 			close $fh_start;		
-
 		}
-		
-		
 	}
 	else
 	{
@@ -642,7 +639,8 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		$target_price = $min_price + 0.0001;
+		# $target_price = $min_price + 0.0001;
+		$target_price = $min_price - 0.0002;		
 		# $target_price = $min_price;
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
@@ -943,7 +941,7 @@ sub decrease_price
 		{
 			# normal decrease
 			# print "local_specific_order accepted_speed is $local_specific_order->{'accepted_speed'} \n";
-			if ( ($local_specific_order->{'accepted_speed'} != 0) || ( $local_specific_order->{'workers'} != 0 ) || ( $local_specific_order->{'price'}  > ($crtMinPrice - 0.0000 )  ) )
+			if ( ($local_specific_order->{'accepted_speed'} != 0) || ( $local_specific_order->{'workers'} != 0 ) )
 			{
 				$decoded_json=get_json("https://api.nicehash.com/api?method=orders.set.price.decrease&id=$apiid&key=$apikey&location=0&algo=$algo&order=$target_order");
 				print Dumper $decoded_json;
