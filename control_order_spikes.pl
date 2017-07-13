@@ -81,7 +81,7 @@ my $max_speed = 40;
 my $l1_speed = 0.2;
 my $l2_speed = 0.4;
 my $l3_speed = 0.8;
-my $req_speed = 0.75;
+my $req_speed = 0.4;
 my $min_speed = 0.2;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
@@ -610,7 +610,7 @@ while (1)
 		print "keep_price_to_min \n";
 		print "MINING ! \n";
 		keep_price_to_min(\%$specific_order);	
-		# increase_speed($req_speed,\%$specific_order);		
+		increase_speed($req_speed,\%$specific_order);		
 	}
 	else
 	{
