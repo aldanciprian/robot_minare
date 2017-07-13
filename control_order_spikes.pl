@@ -64,15 +64,15 @@ my $maxStartCycle = 5160; # maximum number of seconds to repeat the interval
 my $startCycle =  $startCycleRef; # seconds from the last of the cycle start
 my $jitterStartCycle = 40; # seconds from the end where we verify is order is stopped
 my $increaseStartCycle = 20; # seconds to increase start cycle time in case is not to 0
-my $deltaCycleRef =  50; # seconds from the last of the cycle start
+my $deltaCycleRef =  100; # seconds from the last of the cycle start
 my $maxDeltaCycle = 300; # max number of seconds to wait for accepted_speed
 my $deltaCycle =  $deltaCycleRef; # seconds from the last of the cycle start
 my $jitterDeltaCycle =  30; # seconds from the last of the cycle start
-my $increaseDeltaCycle =  15; # seconds from the last of the cycle start
+my $increaseDeltaCycle =  10; # seconds from the last of the cycle start
 my $tf_valid = 0; # if 1 it means we can mine from the point of view of the TF
 my $can_decrease = 0; # says if we are able to decrease instant or not
 my $crtMinPrice = 0; # the current MinPrice
-
+my $has_speed = 0;
 my $fh_decrease;
 my $decreaseFilename = "control_order_spikes_decrease_success.txt";
 
@@ -82,7 +82,7 @@ my $l1_speed = 0.2;
 my $l2_speed = 0.4;
 my $l3_speed = 0.8;
 my $req_speed = 0.75;
-my $min_speed = 0.1;
+my $min_speed = 0.2;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
 
@@ -282,17 +282,21 @@ while (1)
 			if ( $crtBlocks{'noOfBlocks'} >= $blocks_threshold )
 			{
 				# mine only if the current speed is 0
-				if ( ( $specific_order->{'accepted_speed'} == 0 ) && ($specific_order->{'workers'} == 0) )
+				# and we haven't already started mining
+				if ( $currentHighSpeed  == 0 )
 				{
-					print "Start Mining \n";	
-					$tf_valid = 0;
-					# open for append last line
-					$currentHighSpeed = 1;
-					# $startCycle =$startCycleRef;
-					open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
-					print $fh_start "$while_tstmp\n";
-					close $fh_start;		
-				}			
+					if ( ( $specific_order->{'accepted_speed'} == 0 ) && ($specific_order->{'workers'} == 0) )
+					{
+						print "Start Mining \n";	
+						$tf_valid = 0;
+						# open for append last line
+						$currentHighSpeed = 1;
+						# $startCycle =$startCycleRef;
+						open($fh_start, '>>', $filename_start) or die "Could not open file '$filename_start' $!";
+						print $fh_start "$while_tstmp\n";
+						close $fh_start;		
+					}			
+				}
 			}
 			else
 			{
@@ -388,8 +392,13 @@ while (1)
 			}
 			else
 			{
-				print "It received speed \n";
-				$deltaCycle = $deltaCycleRef;
+			  if ( $has_speed == 0 )
+				{
+					print "It received speed \n";
+					$deltaCycle = $deltaCycleRef + ( $deltaCycle - $diffTime );
+					$has_speed = 1;
+				}
+				
 			}			
 			# }
 			# else
@@ -631,6 +640,8 @@ while (1)
 			decrease_price(\%$specific_order,0);						
 		}
 		decrease_speed();
+		$has_speed = 0;
+		$deltaCycle = $deltaCycleRef;
 	}
 
 	print "$while_tstmp $specific_order->{'id'} $specific_order->{'price'} -  $specific_order->{'accepted_speed'}  - $specific_order->{'limit_speed'} $specific_order->{'workers'} - MinPrice $crtMinPrice\n";
