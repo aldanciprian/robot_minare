@@ -1,3 +1,2 @@
 monitor_ether_dump/*
-*_log.txt
-wdg_control_order.txt
+*.txt
