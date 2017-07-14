@@ -640,7 +640,7 @@ sub keep_price_to_min {
 	if ( $min_price <= 0.0700 )
 	{
 		# $target_price = $min_price + 0.0001;
-		$target_price = $min_price - 0.0002;		
+		$target_price = $min_price - 0.0004;		
 		# $target_price = $min_price;
 		if ( $local_specific_order->{'price'} > $target_price )
 		{
