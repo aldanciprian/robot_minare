@@ -77,7 +77,7 @@ my $fh_decrease;
 my $decreaseFilename = "control_order_spikes_decrease_success.txt";
 
 
-my $max_speed = 40;
+my $max_speed = 0.2;
 my $l1_speed = 0.2;
 my $l2_speed = 0.4;
 my $l3_speed = 0.8;
