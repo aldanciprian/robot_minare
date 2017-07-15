@@ -82,7 +82,7 @@ my $l1_speed = 0.2;
 my $l2_speed = 0.4;
 my $l3_speed = 0.8;
 my $req_speed = 0.75;
-my $min_speed = 0.12;
+my $min_speed = 0.42;
 
 #print Dumper decode_json( get( "https://api.nicehash.com/api" ) );
 
