@@ -66,7 +66,7 @@ my $maxStartCycle = 5160; # maximum number of seconds to repeat the interval
 my $startCycle =  $startCycleRef; # seconds from the last of the cycle start
 my $jitterStartCycle = 40; # seconds from the end where we verify is order is stopped
 my $increaseStartCycle = 20; # seconds to increase start cycle time in case is not to 0
-my $deltaCycleRef =  50; # seconds from the last of the cycle start
+my $deltaCycleRef =  100; # seconds from the last of the cycle start
 my $maxDeltaCycle = 300; # max number of seconds to wait for accepted_speed
 my $deltaCycle =  $deltaCycleRef; # seconds from the last of the cycle start
 my $jitterDeltaCycle =  30; # seconds from the last of the cycle start
@@ -83,7 +83,7 @@ my $file_samplings_h;
 my $file_mine = "prezicere_mining.txt";
 my $file_mine_h;
 
-my $win_procent = 0.5;
+my $win_procent = 0.7;
 
 my $sleep_interval = 10;
 
@@ -364,7 +364,7 @@ sub keep_price_to_min {
 	# don't go higher then 0.700
 	if ( $min_price <= 0.0700 )
 	{
-		$target_price = $min_price + 0.0002;
+		$target_price = $min_price + 0.0003;
 		# $target_price = $min_price - 0.0005;		
 		# $target_price = $min_price;
 		if ( $local_specific_order->{'price'} > $target_price )
@@ -958,8 +958,8 @@ sub shouldMine_HashRate
 		return $ret_value;
 	}
 	
-	# 50 seconds jitter
-	if ( ( $lastTime - $firstTime ) > ( 240 +  50 ) )
+	# 60 seconds jitter
+	if ( ( $lastTime - $firstTime ) > ( 240 +  60 ) )
 	{
 		# the window is bigger then 4 min
 		print "window longer then 4 min ! - keep sampling ".($lastTime - $firstTime)." \n";
@@ -1012,7 +1012,6 @@ sub shouldMine_HashRate
 		{
 			# we should mine here
 			print "A very steepe decline $delta_procent \n";
-			print "Start mining \n";
 			$ret_value = 1 ;
 		}
 		else
